@@ -1,0 +1,5 @@
+-c --device DCM -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ..\Inc -I ..\..\..\..\Drivers\CMSIS\Device\ST\STM32L4xx\Include -I ..\..\..\..\Drivers\CMSIS\Include -I ..\..\..\..\Drivers\STM32L4xx_HAL_Driver\Inc -I ..\..\..\..\Drivers\BSP\STM32L476G_EVAL -I ..\..\..\..\Drivers\BSP\Components\Common -I ..\..\..\..\Utilities\Log -I ..\..\..\..\Utilities\CPU --C99
+-IC:\Keil_v5\ARM\RV31\INC
+-IC:\Keil_v5\ARM\CMSIS\Include
+-D__UVISION_VERSION="527" -DSTM32L476xx -DUSE_HAL_DRIVER -DUSE_STM32L476G_EVAL_REVA
+-o stm32l476g_eval\ymodem.o --omf_browse stm32l476g_eval\ymodem.crf --depend stm32l476g_eval\ymodem.d "..\Src\ymodem.c"

@@ -1,0 +1,24 @@
+16:12:18 **** Incremental Build of configuration Debug for project SFBL_Tuan ****
+make all 
+Building file: ../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c
+Invoking: MCU GCC Compiler
+C:\Git\SFBL_Tuan\SFBL_Tuan\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32L476xx -I"C:/Git/SFBL_Tuan/SFBL_Tuan/Inc" -I"C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/STM32L4xx_HAL_Driver/Inc" -I"C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/STM32L4xx_HAL_Driver/Inc" -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I"C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/CMSIS/Device/ST/STM32L4xx/Include" -I"C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/CMSIS/Include" -I"C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/BSP/STM32L476G_EVAL"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.d" -MT"Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.o" -o "Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.o" "../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c"
+../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c:121:28: error: conflicting types for 'MSIRangeTable'
+ extern __IO const uint32_t MSIRangeTable[];  /* Defined in CMSIS (system_stm32l4xx.c)*/
+                            ^~~~~~~~~~~~~
+In file included from C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h:167:0,
+                 from C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4xx.h:148,
+                 from C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h:48,
+                 from C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc.h:47,
+                 from C:/Git/SFBL_Tuan/SFBL_Tuan/Inc/stm32l4xx_hal_conf.h:191,
+                 from C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h:48,
+                 from ../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c:71:
+C:/Git/SFBL_Tuan/SFBL_Tuan/Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h:62:23: note: previous declaration of 'MSIRangeTable' was here
+ extern const uint32_t MSIRangeTable[12];    /*!< MSI ranges table values     */
+                       ^~~~~~~~~~~~~
+Drivers/STM32L4xx_HAL_Driver/Src/subdir.mk:195: recipe for target 'Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.o' failed
+make: *** [Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.o] Error 1
+
+16:12:20 Build Finished (took 2s.80ms)
+

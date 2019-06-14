@@ -1,0 +1,39 @@
+16:09:52 **** Incremental Build of configuration Debug for project Demo3_F ****
+make all 
+Building file: ../Src/common.c
+Invoking: MCU GCC Compiler
+C:\Git\SFBL_Tuan\Demo3_F\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F417xx -I"C:/Git/SFBL_Tuan/Demo3_F/Inc" -I"C:/Git/SFBL_Tuan/Demo3_F/Drivers/STM32F4xx_HAL_Driver/Inc" -I"C:/Git/SFBL_Tuan/Demo3_F/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"C:/Git/SFBL_Tuan/Demo3_F/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"C:/Git/SFBL_Tuan/Demo3_F/Drivers/CMSIS/Include" -I"C:/Git/SFBL_Tuan/Demo3_F/Drivers/STM32_EVAL/STM3240_41_G_EVAL" -I"C:/Git/SFBL_Tuan/Demo3_F/Drivers/STM32_EVAL/Common"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/common.d" -MT"Src/common.o" -o "Src/common.o" "../Src/common.c"
+In file included from C:/Git/SFBL_Tuan/Demo3_F/Inc/common.h:28:0,
+                 from ../Src/common.c:27:
+C:/Git/SFBL_Tuan/Demo3_F/Drivers/STM32_EVAL/STM3240_41_G_EVAL/stm324xg_eval.h:334:40: error: unknown type name 'USART_InitTypeDef'; did you mean 'UART_InitTypeDef'?
+ void STM_EVAL_COMInit(COM_TypeDef COM, USART_InitTypeDef* USART_InitStruct);
+                                        ^~~~~~~~~~~~~~~~~
+                                        UART_InitTypeDef
+../Src/common.c: In function 'SerialKeyPressed':
+../Src/common.c:193:8: warning: implicit declaration of function 'USART_GetFlagStatus' [-Wimplicit-function-declaration]
+   if ( USART_GetFlagStatus(EVAL_COM1, USART_FLAG_RXNE) != RESET)
+        ^~~~~~~~~~~~~~~~~~~
+../Src/common.c:193:39: error: 'USART_FLAG_RXNE' undeclared (first use in this function); did you mean 'UART_FLAG_RXNE'?
+   if ( USART_GetFlagStatus(EVAL_COM1, USART_FLAG_RXNE) != RESET)
+                                       ^~~~~~~~~~~~~~~
+                                       UART_FLAG_RXNE
+../Src/common.c:193:39: note: each undeclared identifier is reported only once for each function it appears in
+../Src/common.c: In function 'SerialPutChar':
+../Src/common.c:229:3: warning: implicit declaration of function 'USART_SendData'; did you mean 'USART_SR_IDLE'? [-Wimplicit-function-declaration]
+   USART_SendData(EVAL_COM1, c);
+   ^~~~~~~~~~~~~~
+   USART_SR_IDLE
+../Src/common.c:230:41: error: 'USART_FLAG_TXE' undeclared (first use in this function); did you mean 'UART_FLAG_TXE'?
+   while (USART_GetFlagStatus(EVAL_COM1, USART_FLAG_TXE) == RESET)
+                                         ^~~~~~~~~~~~~~
+                                         UART_FLAG_TXE
+../Src/common.c: In function 'SerialKeyPressed':
+../Src/common.c:202:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Src/subdir.mk:42: recipe for target 'Src/common.o' failed
+make: *** [Src/common.o] Error 1
+
+16:09:53 Build Finished (took 1s.454ms)
+

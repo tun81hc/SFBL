@@ -1,0 +1,23 @@
+16:53:23 **** Incremental Build of configuration Debug for project DEMO1 ****
+make all 
+Building file: ../Src/menu.c
+Invoking: MCU GCC Compiler
+C:\Git\SFBL_Tuan\DEMO1\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32L476xx -I"C:/Git/SFBL_Tuan/DEMO1/Inc" -I"C:/Git/SFBL_Tuan/DEMO1/Drivers/STM32L4xx_HAL_Driver/Inc" -I"C:/Git/SFBL_Tuan/DEMO1/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy" -I"C:/Git/SFBL_Tuan/DEMO1/Drivers/CMSIS/Device/ST/STM32L4xx/Include" -I"C:/Git/SFBL_Tuan/DEMO1/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/menu.d" -MT"Src/menu.o" -o "Src/menu.o" "../Src/menu.c"
+Finished building: ../Src/menu.c
+ 
+Building target: DEMO1.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=nosys.specs -specs=nano.specs -T"../STM32L476VGTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "DEMO1.elf" @"objects.list"   -lm
+Finished building target: DEMO1.elf
+ 
+make --no-print-directory post-build
+Generating hex and Printing size information:
+arm-none-eabi-objcopy -O ihex "DEMO1.elf" "DEMO1.hex"
+arm-none-eabi-size "DEMO1.elf"
+   text	   data	    bss	    dec	    hex	filename
+  14640	     64	   2848	  17552	   4490	DEMO1.elf
+ 
+
+16:53:26 Build Finished (took 3s.496ms)
+

@@ -1,0 +1,70 @@
+16:44:08 **** Incremental Build of configuration Debug for project DEMO11 ****
+make -j4 all 
+Building file: ../src/menu.c
+Building file: ../src/common.c
+Building file: ../src/main.c
+Invoking: MCU GCC Compiler
+Invoking: MCU GCC Compiler
+Invoking: MCU GCC Compiler
+Building file: ../src/ymodem.c
+C:\Git\SFBL_Tuan\DEMO11\Debug
+C:\Git\SFBL_Tuan\DEMO11\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -DSTM32 -DSTM32F4 -DSTM32F407VETx -DDEBUG -DSTM32F40XX -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -I"C:/Git/SFBL_Tuan/DEMO11/StdPeriph_Driver/inc" -I"C:/Git/SFBL_Tuan/DEMO11/inc" -I"C:/Git/SFBL_Tuan/DEMO11/CMSIS/device" -I"C:/Git/SFBL_Tuan/DEMO11/CMSIS/core" -I"C:/Git/SFBL_Tuan/DEMO11/Utilities/STM32_EVAL/STM3240_41_G_EVAL" -I"C:/Git/SFBL_Tuan/DEMO11/Utilities/STM32_EVAL/Common" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -MMD -MP -MF"src/menu.d" -MT"src/menu.o" -o "src/menu.o" "../src/menu.c"
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -DSTM32 -DSTM32F4 -DSTM32F407VETx -DDEBUG -DSTM32F40XX -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -I"C:/Git/SFBL_Tuan/DEMO11/StdPeriph_Driver/inc" -I"C:/Git/SFBL_Tuan/DEMO11/inc" -I"C:/Git/SFBL_Tuan/DEMO11/CMSIS/device" -I"C:/Git/SFBL_Tuan/DEMO11/CMSIS/core" -I"C:/Git/SFBL_Tuan/DEMO11/Utilities/STM32_EVAL/STM3240_41_G_EVAL" -I"C:/Git/SFBL_Tuan/DEMO11/Utilities/STM32_EVAL/Common" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.c"
+C:\Git\SFBL_Tuan\DEMO11\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -DSTM32 -DSTM32F4 -DSTM32F407VETx -DDEBUG -DSTM32F40XX -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -I"C:/Git/SFBL_Tuan/DEMO11/StdPeriph_Driver/inc" -I"C:/Git/SFBL_Tuan/DEMO11/inc" -I"C:/Git/SFBL_Tuan/DEMO11/CMSIS/device" -I"C:/Git/SFBL_Tuan/DEMO11/CMSIS/core" -I"C:/Git/SFBL_Tuan/DEMO11/Utilities/STM32_EVAL/STM3240_41_G_EVAL" -I"C:/Git/SFBL_Tuan/DEMO11/Utilities/STM32_EVAL/Common" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -MMD -MP -MF"src/common.d" -MT"src/common.o" -o "src/common.o" "../src/common.c"
+Invoking: MCU GCC Compiler
+C:\Git\SFBL_Tuan\DEMO11\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -DSTM32 -DSTM32F4 -DSTM32F407VETx -DDEBUG -DSTM32F40XX -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -I"C:/Git/SFBL_Tuan/DEMO11/StdPeriph_Driver/inc" -I"C:/Git/SFBL_Tuan/DEMO11/inc" -I"C:/Git/SFBL_Tuan/DEMO11/CMSIS/device" -I"C:/Git/SFBL_Tuan/DEMO11/CMSIS/core" -I"C:/Git/SFBL_Tuan/DEMO11/Utilities/STM32_EVAL/STM3240_41_G_EVAL" -I"C:/Git/SFBL_Tuan/DEMO11/Utilities/STM32_EVAL/Common" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -MMD -MP -MF"src/ymodem.d" -MT"src/ymodem.o" -o "src/ymodem.o" "../src/ymodem.c"
+In file included from C:/Git/SFBL_Tuan/DEMO11/inc/common.h:27:0,
+                 from ../src/menu.c:33:
+C:/Git/SFBL_Tuan/DEMO11/CMSIS/device/stm32f4xx.h:108:0: warning: "STM32F40_41xxx" redefined
+   #define STM32F40_41xxx
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+In file included from C:/Git/SFBL_Tuan/DEMO11/inc/flash_if.h:27:0,
+                 from C:/Git/SFBL_Tuan/DEMO11/inc/menu.h:27,
+                 from ../src/main.c:27:
+C:/Git/SFBL_Tuan/DEMO11/CMSIS/device/stm32f4xx.h:108:0: warning: "STM32F40_41xxx" redefined
+   #define STM32F40_41xxx
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+In file included from C:/Git/SFBL_Tuan/DEMO11/inc/common.h:27:0,
+                 from ../src/common.c:27:
+C:/Git/SFBL_Tuan/DEMO11/CMSIS/device/stm32f4xx.h:108:0: warning: "STM32F40_41xxx" redefined
+   #define STM32F40_41xxx
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+../src/main.c: In function 'IAP_Init':
+../src/main.c:88:20: warning: variable 'USART_InitStructure' set but not used [-Wunused-but-set-variable]
+  USART_InitTypeDef USART_InitStructure;
+                    ^~~~~~~~~~~~~~~~~~~
+In file included from C:/Git/SFBL_Tuan/DEMO11/inc/flash_if.h:27:0,
+                 from ../src/ymodem.c:28:
+C:/Git/SFBL_Tuan/DEMO11/CMSIS/device/stm32f4xx.h:108:0: warning: "STM32F40_41xxx" redefined
+   #define STM32F40_41xxx
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+Finished building: ../src/common.c
+Finished building: ../src/menu.c
+Finished building: ../src/main.c
+ 
+ 
+ 
+Finished building: ../src/ymodem.c
+ 
+Building target: DEMO11.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T"C:/Git/SFBL_Tuan/DEMO11/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "DEMO11.elf" @"objects.list"   -lm
+Finished building target: DEMO11.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "DEMO11.elf" "DEMO11.bin"
+arm-none-eabi-size "DEMO11.elf"
+   text	   data	    bss	    dec	    hex	filename
+   9120	   1080	   2380	  12580	   3124	DEMO11.elf
+ 
+
+16:44:13 Build Finished (took 4s.342ms)
+

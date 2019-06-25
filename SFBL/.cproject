@@ -68,6 +68,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/CMSIS/device&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/CMSIS/core&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SFBL/KeyMng}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.81726249" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.assembler.input.1717360209" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler.input"/>
@@ -75,6 +76,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="KeyMng"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="StdPeriph_Driver"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
@@ -150,6 +152,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="KeyMng"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="StdPeriph_Driver"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>

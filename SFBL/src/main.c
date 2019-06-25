@@ -8,7 +8,6 @@
   ******************************************************************************
 */
 
-
 #include "stm32f4xx.h"
 #include "main.h"
 #include "ymodem.h"
@@ -23,46 +22,6 @@ Bootloader_State BL_State = Init;
 
 int main(void)
 {
-	/*RCC_DeInit();
-	__disable_irq();
-	SysTick->CTRL = 0;
-	SysTick->LOAD = 0;
-	SysTick->VAL = 0;
-	//SCB->VTOR = 0x08008000;
-	for (uint8_t i = 0; i<8;i++){
-		NVIC->ICER[i] = 0xFFFFFFFF;
-		NVIC->ICPR[i] = 0xFFFFFFFF;
-	}
-	JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-				    Jump_To_Application = (pFunction) JumpAddress;
-				       Initialize user application's Stack Pointer
-				  __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-				    Jump_To_Application();*/
-	//NVIC_SystemReset();
-	//while(1);
-	/*Jump_To_Application = (pFunction)(0x08009488);
-	Jump_To_Application();*/
-/*				JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-			    Jump_To_Application = (pFunction) JumpAddress;
-			       Initialize user application's Stack Pointer
-			    __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-			    Jump_To_Application();*/
-
-	/*for (uint8_t i = 0; i<8;i++){
-					NVIC->ICER[i] = 0xFFFFFFFF;
-					NVIC->ICPR[i] = 0xFFFFFFFF;
-				}
-		SysTick->CTRL = 0;
-		SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk ;
-		SCB->SHCSR &= ~( SCB_SHCSR_USGFAULTENA_Msk | \
-		                 SCB_SHCSR_BUSFAULTENA_Msk | \
-		                 SCB_SHCSR_MEMFAULTENA_Msk ) ;
-		if( CONTROL_SPSEL_Msk & __get_CONTROL( ) )
-		{   MSP is not active
-		  __set_CONTROL( __get_CONTROL( ) & ~CONTROL_SPSEL_Msk ) ;
-		}*/
-
-
 	FLASH_If_Init();
 	if (1)
 	{
@@ -72,20 +31,13 @@ int main(void)
 		   //Keep the user application running
 	else
 		{
-
-		     /*Test if user code is programmed starting from address "APPLICATION_ADDRESS"*/
-
-		//if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
-		 //{
-		       /*Jump to user application*/
-
 		    JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
 		    Jump_To_Application = (pFunction) JumpAddress;
 		      /* Initialize user application's Stack Pointer*/
 		    __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
 		    Jump_To_Application();
 		}
-		//}
+
 }
 void IAP_Init(void)
 {

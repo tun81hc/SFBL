@@ -1,39 +1,16 @@
-/**
-  ******************************************************************************
-  * @file    STM32F4xx_IAP/src/menu.c 
-  * @author  MCD Application Team
-  * @version V1.0.0
-  * @date    10-October-2011
-  * @brief   This file provides the software which contains the main menu routine.
-  *          The main menu gives the options of:
-  *             - downloading a new binary file, 
-  *             - uploading internal flash memory,
-  *             - executing the binary file already loaded 
-  *             - disabling the write protection of the Flash sectors where the 
-  *               user loads his binary file.
-  ******************************************************************************
-  * @attention
-  *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-  *
-  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
-  ******************************************************************************
-  */ 
-
-/** @addtogroup STM32F4xx_IAP
-  * @{
-  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "common.h"
 #include "flash_if.h"
 #include "menu.h"
 #include "ymodem.h"
+
+
+unsigned char Keydata[16]={0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
+//unsigned char Reference_MAC[16]={0x2E,0x5B,0xC7,0xB5,0x7C,0xA4,0xA8,0xA2,0x97,0xDA,0xA8,0x38,0x59,0xAA,0x8D,0x3B};
+uint8_t result[16];
+unsigned char K1[16], K2[16],X[16],MAC;
+uint8_t RefMACApp[16];
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -47,6 +24,7 @@ uint8_t tab_1024[1024] =
     0
   };
 uint8_t FileName[FILE_NAME_LENGTH];
+unsigned char x[16];
 
 /* Private function prototypes -----------------------------------------------*/
 void SerialDownload(void);
@@ -131,7 +109,7 @@ void SerialUpload(void)
 void Main_Menu(void)
 {
   uint8_t key = 0;
-
+  unsigned char CMACresult[16], CMACkeydata[16];
   SerialPutString("\r\n======================================================================");
   SerialPutString("\r\n=              (C) COPYRIGHT 2011 STMicroelectronics                 =");
   SerialPutString("\r\n=                                                                    =");
@@ -153,20 +131,22 @@ void Main_Menu(void)
 
   while (1)
   {
+
     SerialPutString("\r\n================== Main Menu ============================\r\n\n");
     SerialPutString("  Download Image To the STM32F4xx Internal Flash ------- 1\r\n\n");
     SerialPutString("  Upload Image From the STM32F4xx Internal Flash ------- 2\r\n\n");
-    SerialPutString("  Execute The New Program ------------------------------ 3\r\n\n");
+    SerialPutString("  Load key to flash------------------------------------- 3\r\n\n");
+    SerialPutString("  Execute The New Program------------------------------- 4\r\n\n");
 
     if(FlashProtection != 0)
     {
-      SerialPutString("  Disable the write protection ------------------------- 4\r\n\n");
+      SerialPutString("  Disable the write protection ------------------------- 5\r\n\n");
     }
 
     SerialPutString("==========================================================\r\n\n");
 
     /* Receive key */
-    key =  GetKey();
+    key = GetKey();
 
     if (key == '1')
     {
@@ -178,33 +158,44 @@ void Main_Menu(void)
       /* Upload user application from the Flash */
       SerialUpload();
     }
-    else if (key == '3') /* execute the new program */
+    else if (key == '4')  /*execute the new program*/
     {
-      SerialPutString("  Execute the new program ------------------------- \r\n\n");
+    	/*Read KeyData with KeyID*/
+    	read_key(3,(uint32_t*) result);
+    	SerialPutString("Calculate CMAC of application--------------------------- \r\n\n");
+    	AES_CMAC(result,(unsigned char*)0x08008010, 128, CMACresult);
+    	for(uint8_t i=0;i<16;i++)
+    	{
+    		RefMACApp[i]= *(uint8_t*)(0x8008000+0x01*i);
+    	}
 
-      /*SCB->VTOR= 0x08008000;*/
-      /*NVIC_SystemReset();*/
-      /*SysTick->CTRL = 0;
-      		SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk ;
-      		SCB->SHCSR &= ~( SCB_SHCSR_USGFAULTENA_Msk | \
-      		                 SCB_SHCSR_BUSFAULTENA_Msk | \
-      		                 SCB_SHCSR_MEMFAULTENA_Msk ) ;
-      		if( CONTROL_SPSEL_Msk & __get_CONTROL( ) )
-      		{   /*MSP is not active*/
-      		  //__set_CONTROL( __get_CONTROL( ) & ~CONTROL_SPSEL_Msk ) ;
-      		//}*/
-      USART_DeInit(USART1);
-      			GPIO_DeInit(GPIOA);
-      			SCB->VTOR = APPLICATION_ADDRESS;
-      			__disable_irq();
-      JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+    	if (Verify_MAC(result, (unsigned char*)0x08008010, 128,RefMACApp) == 1)
+    	{
+    		SerialPutString("Verify Application: PASS-------------------------------- \r\n\n");
+    		SerialPutString("Execute the new program -------------------------------- \r\n\n");
+    				USART_DeInit(USART1);
+    		      	GPIO_DeInit(GPIOA);
+    		      	SCB->VTOR = APPLICATION_ADDRESS+0x10;
+    		      			__disable_irq();
+    		      JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4+0x10);
 
-      //JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS);
-      /* Jump to user application */
-      Jump_To_Application = (pFunction) ((uint32_t)JumpAddress);
-      /* Initialize user application's Stack Pointer */
-      __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-     Jump_To_Application();
+    		      //JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS);
+    		       //Jump to user application
+    		      Jump_To_Application = (pFunction) ((uint32_t)JumpAddress);
+    		       //Initialize user application's Stack Pointer
+    		      __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS+0x10);
+    		     Jump_To_Application();
+    	}
+    	else
+    		SerialPutString("Verify Application: FAIL-------------------------------- \r\n\n");
+    }
+    else if (key == '3')
+    {
+    	/* Update key ID 3 with KeyData*/
+    	intkey();
+    	update_key(3,(uint32_t*)Keydata);
+    	write_flash();
+    	SerialPutString("Load key successfully ------------------------- \r\n\n");
     }
     else if ((key == 0x34) && (FlashProtection == 1))
     {
@@ -240,9 +231,5 @@ void Main_Menu(void)
     }
   }
 }
-
-/**
-  * @}
-  */
 
 /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE******/

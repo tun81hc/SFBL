@@ -63,11 +63,18 @@ MEMORY
 {
   RAM (xrw)		: ORIGIN = 0x20000000, LENGTH = 128K
   ROM (rx)		: ORIGIN = 0x8000000, LENGTH = 512K
+  DATA(rwx)		: ORIGIN = 0x0804000, LENGTH = 128K 
 }
 
 /* Sections */
 SECTIONS
 {
+  .user_data :
+  {
+    . = ALIGN(4);
+     KEEP(*(.user_data))
+    . = ALIGN(4);
+  } > DATA
   /* The startup code into ROM memory */
   .isr_vector :
   {

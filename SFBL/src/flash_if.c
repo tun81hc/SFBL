@@ -62,7 +62,29 @@ uint32_t FLASH_If_Erase(uint32_t StartSector)
   /* Get the sector where start the user flash area */
   UserStartSector = GetSector(APPLICATION_ADDRESS);
 
-  for(i = UserStartSector; i <= FLASH_Sector_11; i += 8)
+  for(i = UserStartSector; i <= FLASH_Sector_5; i += 8)
+  {
+    /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+       be done by word */
+    if (FLASH_EraseSector(i, VoltageRange_3) != FLASH_COMPLETE)
+    {
+      /* Error occurred while page erase */
+      return (1);
+    }
+  }
+
+  return (0);
+}
+
+/* This is to erase selected sector*/
+uint32_t FLASH_If_Erase_Data(uint32_t StartSector, uint32_t lenght )
+{
+  uint32_t UserStartSector, UserEndSector, i = 0;
+
+  /* Get the sector where start the user flash area */
+  UserStartSector = GetSector(StartSector);
+  UserEndSector = GetSector(StartSector + lenght-1);
+  for(i = UserStartSector; i <= UserEndSector; i += 8)
   {
     /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
        be done by word */ 

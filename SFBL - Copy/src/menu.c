@@ -11,7 +11,8 @@ unsigned char Keydata[16]={0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x1
 uint8_t result[16];
 unsigned char K1[16], K2[16],X[16],MAC;
 uint8_t RefMACApp[16];
-
+unsigned char* PlainText="sang0209";
+unsigned char CipherText[16];
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -109,7 +110,6 @@ void SerialUpload(void)
 void Main_Menu(void)
 {
   uint8_t key = 0;
-  unsigned char CMACresult[16], CMACkeydata[16];
   SerialPutString("\r\n======================================================================");
   SerialPutString("\r\n=              (C) COPYRIGHT 2011 STMicroelectronics                 =");
   SerialPutString("\r\n=                                                                    =");
@@ -163,7 +163,7 @@ void Main_Menu(void)
     	/*Read KeyData with KeyID*/
     	KeyMng_ReadKey(3,(uint32_t*) result);
     	SerialPutString("Calculate CMAC of application--------------------------- \r\n\n");
-    	AES_CMAC(result,(unsigned char*)0x08008010, 128, CMACresult);
+    	//AES_CMAC(result,(unsigned char*)0x08008010, 128, CMACresult);
     	for(uint8_t i=0;i<16;i++)
     	{
     		RefMACApp[i]= *(uint8_t*)(0x8008000+0x01*i);
@@ -173,18 +173,18 @@ void Main_Menu(void)
     	{
     		SerialPutString("Verify Application: PASS-------------------------------- \r\n\n");
     		SerialPutString("Execute the new program -------------------------------- \r\n\n");
-    				USART_DeInit(USART1);
-    		      	GPIO_DeInit(GPIOA);
-    		      	SCB->VTOR = APPLICATION_ADDRESS+0x10;
-    		      			__disable_irq();
-    		      JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4+0x10);
+			USART_DeInit(USART1);
+			GPIO_DeInit(GPIOA);
+			SCB->VTOR = APPLICATION_ADDRESS+0x10;
+					__disable_irq();
+			JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4+0x10);
 
-    		      //JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS);
-    		       //Jump to user application
-    		      Jump_To_Application = (pFunction) ((uint32_t)JumpAddress);
-    		       //Initialize user application's Stack Pointer
-    		      __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS+0x10);
-    		     Jump_To_Application();
+			//JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS);
+		    //Jump to user application
+			Jump_To_Application = (pFunction) ((uint32_t)JumpAddress);
+			//Initialize user application's Stack Pointer
+			__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS+0x10);
+			Jump_To_Application();
     	}
     	else
     		SerialPutString("Verify Application: FAIL-------------------------------- \r\n\n");

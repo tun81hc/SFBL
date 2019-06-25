@@ -16,7 +16,7 @@
 **
 **  Target      : STMicroelectronics STM32
 **
-**  Distribution: The file is distributed “as is,” without any warranty
+**  Distribution: The file is distributed “as is,? without any warranty
 **                of any kind.
 **
 *****************************************************************************
@@ -62,21 +62,19 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM (xrw)		: ORIGIN = 0x20000000, LENGTH = 128K
-  DATA(xrw)		: ORIGIN = 0x08008000, LENGTH = 0x10
-  
-  ROM (rx)		: ORIGIN = 0x08008010, LENGTH = 512K
-
+  ROM (rx)		: ORIGIN = 0x8000000, LENGTH = 512K
+  DATA(rwx)		: ORIGIN = 0x0804000, LENGTH = 128K 
 }
 
 /* Sections */
 SECTIONS
 {
-	.user_data :
+  .user_data :
   {
     . = ALIGN(4);
-    KEEP(*(.user_data)) /* Startup code */
+     KEEP(*(.user_data))
     . = ALIGN(4);
-  } >DATA
+  } > DATA
   /* The startup code into ROM memory */
   .isr_vector :
   {

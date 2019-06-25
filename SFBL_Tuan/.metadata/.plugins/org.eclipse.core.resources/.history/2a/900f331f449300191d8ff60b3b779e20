@@ -1,0 +1,26 @@
+/*
+ * SHE.h
+ *
+ *  Created on: Jun 18, 2019
+ *      Author: AUP81HC
+ */
+
+#ifndef SHE_H_
+#define SHE_H_
+
+#include "stm32l4xx_hal.h"
+#include "aes.h"
+#include "cmac.h"
+#include "KeyMng.h"
+
+void CMD_INIT(uint8_t Key_ID, unsigned char Key[16]);
+
+void CMD_ENC_ECB(uint8_t* Key, uint8_t* PlainText, uint8_t* CipherText);
+void CMD_DEC_ECB(uint8_t* CipherText);
+void CMD_ENC_CBC(uint8_t* Key,  uint32_t length, uint8_t* PlainText, uint8_t* CipherText);
+void CMD_DEC_CBC(uint8_t* Key, uint8_t* CipherText, uint32_t length);
+
+void Select_Key(uint8_t Key_ID, unsigned char *Key);
+
+
+#endif /* SHE_H_ */

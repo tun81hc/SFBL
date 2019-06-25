@@ -1,6 +1,6 @@
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
-configDescList=org.eclipse.launchbar.core.descriptorType.default\:SFBL_STM32F4 Debug,org.eclipse.launchbar.core.descriptorType.default\:SFBL Debug,org.eclipse.launchbar.core.descriptorType.default\:New_configuration,org.eclipse.launchbar.core.descriptorType.default\:DEMO1 Debug,org.eclipse.launchbar.core.descriptorType.default\:LED_LINK Debug
+configDescList=org.eclipse.launchbar.core.descriptorType.default\:SFBL_STM32F4 Debug,org.eclipse.launchbar.core.descriptorType.default\:SFBL Debug,org.eclipse.launchbar.core.descriptorType.default\:New_configuration,org.eclipse.launchbar.core.descriptorType.default\:New_configuration (1),org.eclipse.launchbar.core.descriptorType.default\:LED_LINK Debug,org.eclipse.launchbar.core.descriptorType.default\:DEMO1 Debug
 eclipse.preferences.version=1
 org.eclipse.launchbar.core.descriptorType.default\:DEMO1\ Debug/activeLaunchMode=debug
 org.eclipse.launchbar.core.descriptorType.default\:DEMO1\ Debug/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local

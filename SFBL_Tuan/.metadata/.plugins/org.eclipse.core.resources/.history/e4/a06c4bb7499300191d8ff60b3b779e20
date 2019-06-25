@@ -1,0 +1,87 @@
+/*
+ * SHE.c
+ *
+ *  Created on: Jun 18, 2019
+ *      Author: AUP81HC
+ */
+#include "SHE.h"
+#include "string.h"
+#include "stdio.h"
+
+static struct AES_ctx ctx;
+HAL_StatusTypeDef status;
+
+//Init
+void CMD_INIT(unsigned char Key_ID, unsigned char Key[16])
+{
+	Select_Key(Key_ID, Key);
+	AES_init_ctx(&ctx, Key);
+}
+
+//ECB Encryption Process
+void CMD_ENC_ECB(unsigned char* Key, unsigned char* PlainText, unsigned char* CipherText)
+{
+	AES_ECB_encrypt(&ctx, PlainText, CipherText);
+}
+
+
+void CMD_DEC_ECB(unsigned char* CipherText)
+{
+	AES_ECB_decrypt(&ctx, CipherText);
+}
+
+
+//CBC Encryption Process
+void CMD_ENC_CBC(unsigned char* Key,  uint32_t length, unsigned char* PlainText, unsigned char* CipherText)
+{
+	AES_CBC_encrypt_buffer(&ctx, PlainText, length, CipherText);
+}
+
+
+
+void CMD_DEC_CBC(unsigned char* Key, unsigned char* CipherText, uint32_t length)
+{
+	AES_CBC_decrypt_buffer(&ctx, CipherText, length);
+}
+
+//Generate Sub-keys
+void CMD_GENERATE_MAC_START(unsigned char *Key, unsigned char K1[16], unsigned char K2[16])
+{
+	CMAC_Start(&ctx, Key, K1, K2);
+}
+
+//Update CMAC
+void CMD_GENERATE_MAC_UPDATE(unsigned char *Key, uint8_t *length, unsigned char* PlainText, unsigned char X[16])
+{
+	CMAC_Update(&ctx, PlainText, length, X);
+}
+
+void CMD_GENERATE_MAC_FINISH(unsigned char* K1, unsigned char* K2, unsigned char* PlainText, uint8_t *length, unsigned char* MAC)
+{
+	CMAC_Finish(&ctx, K1, K2, PlainText, length, MAC);
+}
+
+void CMD_VERIFY_MAC(unsigned char* K, unsigned char* PlainText,  uint8_t length, unsigned char* MAC_Bootloader, unsigned char* MAC_Application)
+{
+	Verify_MAC(K, PlainText, length, MAC_Bootloader, MAC_Application);
+}
+
+
+void Select_Key(unsigned char Key_ID, unsigned char Key[16])
+{
+ 	unsigned char Key1[] = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
+
+
+ 	switch(Key_ID){
+ 	case 1:
+ 		memcpy(Key, Key1, 16);
+ 		break;
+
+ 	case 2:
+ 		break;
+
+ 	default:
+ 		break;
+
+ 	}
+}

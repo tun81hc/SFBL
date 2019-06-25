@@ -4,4 +4,4 @@
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.postmortemLaunchType=org.eclipse.cdt.dsf.gdb.launch.coreCLaunch,debug,;
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.remoteApplicationLaunchType=org.eclipse.rse.remotecdt.dsf.debug,debug,;
 eclipse.preferences.version=1
-prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<watchExpressions>\r\n<expression enabled\="true" text\="RX_TIMEOUT"/>\r\n<expression enabled\="true" text\="ReceivePacket"/>\r\n<expression enabled\="true" text\="FileName"/>\r\n<expression enabled\="true" text\="APPLICATION_ADDRESS"/>\r\n</watchExpressions>\r\n
+prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<watchExpressions>\r\n<expression enabled\="true" text\="T1"/>\r\n<expression enabled\="true" text\="Key"/>\r\n<expression enabled\="true" text\="T"/>\r\n<expression enabled\="true" text\="T2"/>\r\n<expression enabled\="true" text\="T3"/>\r\n<expression enabled\="true" text\="MAC_Bootloader"/>\r\n<expression enabled\="true" text\="Reference_MAC"/>\r\n</watchExpressions>\r\n

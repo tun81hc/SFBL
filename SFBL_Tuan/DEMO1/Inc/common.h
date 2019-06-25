@@ -69,3 +69,5 @@ HAL_StatusTypeDef Serial_PutByte(uint8_t param);
 #endif  /* __COMMON_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+//typedef unsigned char uint8;
+//uint8 a;

@@ -21,6 +21,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+//
+__attribute__((__section__(".user_data"))) uint8_t RefMAC[16]={0x26,0xf0,0xdf,0x64,0xad,0x58,0x97,0x98,0x92,0x92,0x66,0x09,0xc5,0xca,0x61,0x07};
+
+__attribute__((__section__(".length_application"))) uint32_t length_app = 1024;
+
+extern uint32_t _stext;
+extern uint32_t _etext;
+uint32_t length_1 = 0;
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -65,6 +74,7 @@ static void MX_GPIO_Init(void);
   */
 int main(void)
 {
+	length_1 = &_etext - &_stext;
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -95,11 +105,16 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   uint32_t i = 0;
+
   while (1)
   {
     /* USER CODE END WHILE */
 
 	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);
+	  for(i =0; i< 3000000; i++)
+	  	  {
+
+	  	  }
 	  HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_8);
 
 	  for(i =0; i< 3000000; i++)

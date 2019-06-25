@@ -177,6 +177,19 @@ uint32_t FLASH_If_Write(uint32_t destination, uint32_t *p_source, uint32_t lengt
   return status;
 }
 
+
+void FLASH_If_Read(uint32_t destination, uint32_t* Flash_data)
+{
+	//uint32_t Flash_data;
+
+	//Flash_data = *(uint32_t *)destination;
+	for(uint32_t i=0; i<32; i++)
+					{
+						*((uint32_t *)Flash_data + i) = *(uint32_t *)destination;
+						destination+=2;
+					}
+}
+
 /**
   * @brief  Returns the write protection status of application flash area.
   * @param  None

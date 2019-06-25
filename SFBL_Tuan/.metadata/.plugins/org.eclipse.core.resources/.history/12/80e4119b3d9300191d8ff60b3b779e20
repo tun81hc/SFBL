@@ -1,0 +1,45 @@
+/*
+ * SHE.h
+ *
+ *  Created on: Jun 18, 2019
+ *      Author: AUP81HC
+ */
+
+#ifndef SHE_H_
+#define SHE_H_
+
+#include "stm32l4xx_hal.h"
+#include "aes.h"
+#include "cmac.h"
+
+
+
+
+typedef enum {
+	ERC_NO_ERROR = 0,
+	ERC_SEQUENCE_ERROR,
+	ERC_KEY_NOT_AVAILABLE,
+	ERC_KEY_INVALID,
+	ERC_KEY_EMPTY,
+	ERC_NO_SECURE_BOOT,
+	ERC_KEY_WRITE_PROTECTED,
+	ERC_KEY_UPDATE_ERROR,
+	ERC_RNG_SEED,
+	ERC_NO_DEBUGGING,
+	ERC_BUSY,
+	ERC_MEMORY_FAILURE,
+	ERC_GENERAL_ERROR
+} SHE_ERROR_CODE;
+
+
+
+SHE_ERROR_CODE CND_ENC_ECB(struct AES_ctx ctx, uint8_t Key_ID, uint8_t* PlainText, uint8_t* CipherText);
+SHE_ERROR_CODE CND_DEC_ECB(struct AES_ctx ctx, uint8_t* CipherText);
+SHE_ERROR_CODE CND_ENC_CBC(uint8_t Key_ID, uint8_t* PlainText, uint32_t length, uint8_t* HyperText);
+SHE_ERROR_CODE CND_DEC_CBC(uint8_t Key_ID, uint8_t* HyperText, uint32_t length);
+
+
+void Select_Key(uint8_t Key_ID, unsigned char *Key);
+
+
+#endif /* SHE_H_ */

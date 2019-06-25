@@ -16,7 +16,7 @@
 **
 **  Target      : STMicroelectronics STM32
 **
-**  Distribution: The file is distributed “as is,” without any warranty
+**  Distribution: The file is distributed â€œas is,â€� without any warranty
 **                of any kind.
 **
 *****************************************************************************
@@ -63,12 +63,28 @@ MEMORY
 {
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 96K
 RAM2 (xrw)      : ORIGIN = 0x10000000, LENGTH = 32K
-FLASH (rx)      : ORIGIN = 0x8008000, LENGTH = 1024K
+DATA(xrw)		: ORIGIN = 0x08008000, LENGTH = 0x10
+LENGTHA(xrw)	: ORIGIN = 0x08008010, LENGTH = 0x10
+FLASH (rx)      : ORIGIN = 0x08008020, LENGTH = 1024K
 }
 
 /* Define output sections */
 SECTIONS
 {
+	.user_data :
+  {
+    . = ALIGN(4);
+    KEEP(*(.user_data)) /* Startup code */
+    . = ALIGN(4);
+  } >DATA
+  
+  	.length_application :
+  {
+    . = ALIGN(4);
+    KEEP(*(.length_application)) /* Startup code */
+    . = ALIGN(4);
+  } >LENGTHA 
+	
   /* The startup code goes first into FLASH */
   .isr_vector :
   {
@@ -81,6 +97,7 @@ SECTIONS
   .text :
   {
     . = ALIGN(8);
+	_stext = .;
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.glue_7)         /* glue arm to thumb code */

@@ -49,7 +49,7 @@
 /* Error code */
 enum 
 {
-  FLASHIF_OK = 0,
+  FLASHIF_OK = 1,
   FLASHIF_ERASEKO,
   FLASHIF_WRITINGCTRL_ERROR,
   FLASHIF_WRITING_ERROR,
@@ -73,6 +73,8 @@ enum {
 /* Define the address from where user application will be loaded.
    Note: this area is reserved for the IAP code                  */
 #define FLASH_PAGE_STEP         FLASH_PAGE_SIZE           /* Size of page : 2 Kbytes */
+
+//#define MAC_ADDRESS     		(uint32_t)0x08008000      /* MAC Address: 16 Bytes */
 #define APPLICATION_ADDRESS     (uint32_t)0x08008000      /* Start user code address: ADDR_FLASH_PAGE_8 */
 
 /* Notable Flash addresses */
@@ -97,6 +99,7 @@ void FLASH_If_Init(void);
 uint32_t FLASH_If_Erase(uint32_t StartSector);
 uint32_t FLASH_If_GetWriteProtectionStatus(void);
 uint32_t FLASH_If_Write(uint32_t destination, uint32_t *p_source, uint32_t length);
+void FLASH_If_Read(uint32_t destination, uint32_t *Flash_data);
 uint32_t FLASH_If_WriteProtectionConfig(uint32_t protectionstate);
 
 #endif  /* __FLASH_IF_H */

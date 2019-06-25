@@ -1,16 +1,10 @@
-16:53:11 **** Incremental Build of configuration Debug for project LED_LINK ****
+15:29:03 **** Incremental Build of configuration Debug for project LED_LINK ****
 make all 
 Building file: ../Src/main.c
 Invoking: MCU GCC Compiler
 C:\Git\SFBL_Tuan\LED_LINK\Debug
 arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32L476xx -I"C:/Git/SFBL_Tuan/LED_LINK/Inc" -I"C:/Git/SFBL_Tuan/LED_LINK/Drivers/STM32L4xx_HAL_Driver/Inc" -I"C:/Git/SFBL_Tuan/LED_LINK/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy" -I"C:/Git/SFBL_Tuan/LED_LINK/Drivers/CMSIS/Device/ST/STM32L4xx/Include" -I"C:/Git/SFBL_Tuan/LED_LINK/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
 Finished building: ../Src/main.c
- 
-Building file: ../Src/stm32l4xx_it.c
-Invoking: MCU GCC Compiler
-C:\Git\SFBL_Tuan\LED_LINK\Debug
-arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32L476xx -I"C:/Git/SFBL_Tuan/LED_LINK/Inc" -I"C:/Git/SFBL_Tuan/LED_LINK/Drivers/STM32L4xx_HAL_Driver/Inc" -I"C:/Git/SFBL_Tuan/LED_LINK/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy" -I"C:/Git/SFBL_Tuan/LED_LINK/Drivers/CMSIS/Device/ST/STM32L4xx/Include" -I"C:/Git/SFBL_Tuan/LED_LINK/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/stm32l4xx_it.d" -MT"Src/stm32l4xx_it.o" -o "Src/stm32l4xx_it.o" "../Src/stm32l4xx_it.c"
-Finished building: ../Src/stm32l4xx_it.c
  
 Building target: LED_LINK.elf
 Invoking: MCU GCC Linker
@@ -23,8 +17,8 @@ arm-none-eabi-objcopy -O binary "LED_LINK.elf" "LED_LINK.bin"
 arm-none-eabi-objcopy -O ihex "LED_LINK.elf" "LED_LINK.hex"
 arm-none-eabi-size "LED_LINK.elf"
    text	   data	    bss	    dec	    hex	filename
-   6144	     32	   1568	   7744	   1e40	LED_LINK.elf
+   6176	     52	   1576	   7804	   1e7c	LED_LINK.elf
  
 
-16:53:15 Build Finished (took 4s.531ms)
+15:29:06 Build Finished (took 3s.167ms)
 

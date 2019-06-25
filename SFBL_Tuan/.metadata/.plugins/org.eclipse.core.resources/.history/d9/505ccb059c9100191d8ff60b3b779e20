@@ -1,0 +1,18 @@
+/*
+ * SHE.h
+ *
+ *  Created on: Jun 18, 2019
+ *      Author: AUP81HC
+ */
+
+#ifndef SHE_H_
+#define SHE_H_
+
+#include "stm32l4xx_hal.h"
+
+void CND_ENC_ECB(uint8_t Key_ID, uint8_t* PlainText, uint8_t* HyperText);
+void CND_DEC_ECB(uint8_t Key_ID, uint8_t* HyperText);
+void CND_ENC_CBC(uint8_t Key_ID, uint8_t* PlainText, uint32_t length, uint8_t* HyperText);
+void CND_DEC_CBC(uint8_t Key_ID, uint8_t* HyperText, uint32_t length);
+
+#endif /* SHE_H_ */

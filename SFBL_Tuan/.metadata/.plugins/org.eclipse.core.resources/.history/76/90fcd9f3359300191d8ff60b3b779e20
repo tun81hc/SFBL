@@ -1,0 +1,328 @@
+/*
+* cmac.c
+*
+*  Created on: Jun 17, 2019
+*      Author: AUP81HC
+*/
+
+
+#include "aes.h"
+#include "cmac.h"
+#include "main.h"
+
+#include "string.h"
+#include "math.h"
+
+extern unsigned char const_Zero[];
+extern unsigned char const_Rb[];
+
+void Delay1(int num)
+{
+	for(int i = 0; i< num; i++){
+
+	}
+}
+
+
+void Receive_UART(unsigned char RXbuff[256], int *lenRX)
+{
+	int flag_NULL = 1;
+	int z = 0;
+	while(flag_NULL == 1)
+	{
+	memset(RXbuff, 0, 256);
+	HAL_UART_Transmit(&huart2, (unsigned char*)"Nhap Message:", 13, 20);
+	HAL_UART_Receive(&huart2, RXbuff, 256, 8000);
+
+	for(int j=0; j< 5;j++)
+		{
+			if(RXbuff[j] == 0  && j>=1)
+				flag_NULL = 1;
+			else flag_NULL = 0;
+		}
+	*lenRX = 0;
+	if(flag_NULL == 0)
+
+	for(z = 0; z < 256; z++)
+	{
+		if(RXbuff[z] == 0)
+			break;
+		*lenRX = *lenRX + 1;
+	}
+	HAL_UART_Transmit(&huart2, (unsigned char*)"\n", 2, 20);
+	}
+
+}
+
+void Verify_MAC(unsigned char* K, unsigned char* M, uint32_t len, unsigned char* input, unsigned char* Output)
+{
+	AES_CMAC(K, M, len, Output);
+	if (0 == memcmp((unsigned char*) Output, (unsigned char*) input, 16))
+		HAL_UART_Transmit(&huart2, (unsigned char *)"VALID\n", 7, 40);
+	else
+		HAL_UART_Transmit(&huart2, (unsigned char *)"INVALID\n", 9, 40);
+}
+
+
+// need to modify
+void CMAC_Start(struct AES_ctx ctx, unsigned char* K, unsigned char K1[16], unsigned char K2[16])
+{
+	Generate_Subkey(K, K1, K2);
+	AES_init_ctx(&ctx, K);
+}
+
+
+void Encrypt_Block(struct AES_ctx ctx, unsigned char* M1, unsigned char X1[16])
+{
+	unsigned char Y[16];
+	XOR_16bytes(X1, M1, Y);
+	AES_ECB_encrypt(&ctx,Y, X1);
+}
+
+/*
+void CMAC_Update(struct AES_ctx ctx, unsigned char* M, unsigned char X[16])
+{
+
+	while(1){
+	if(0 == memcmp( M, buffer2, lenRX))
+	  {
+		  Data_buff_size += size_temp;
+		  break;
+	  }
+
+	  if(size_temp == 0)
+	  {
+		  memset(Data_buff2, 0, 256);
+		  memcpy(Data_buff2, RXbuff, lenRX);
+		  New_LenRX = lenRX;
+	  } else
+	  {
+		  if(size_temp > 0)
+		  {
+			  int i = 0;
+			  New_LenRX = (size_temp + lenRX);
+			  memset(Data_buff2, 0, 256);
+			  for(int g = 0; g< New_LenRX; g ++)
+			  {
+				  if(g < size_temp)
+				  {
+				  Data_buff2[g] = M_Last[g];
+				  }
+				  else {
+					  Data_buff2[g] = RXbuff[i];
+					  i++;
+				  }
+			  }
+		  }
+	  }
+
+	  if(New_LenRX == 16)
+	  {
+		  //CMAC_Update(ctx, Data_buff2, X);  //update 1 lan
+		  memset(M_Last, 0, 16);
+		  memcpy(M_Last, Data_buff2, New_LenRX);
+		  memcpy(&Data_buff[16*flag1],Data_buff2, 16);
+		  Data_buff_size += 16;
+		  size_temp = 16;
+
+	  }else {
+		  if(New_LenRX > 16)
+		  {
+			  n_block = ceil(New_LenRX/16.0);
+			  size_temp = New_LenRX%16;
+
+			  for(int i = 0; i< (n_block - 1); i++)
+			  {
+				  CMAC_Update(ctx, &Data_buff2[16*i], X);
+
+				  memcpy(&Data_buff[16*flag1],&Data_buff2[16*i], 16);
+				  Data_buff_size += 16;
+
+				  flag1 += 1;
+			  }
+			  if(size_temp == 0)
+			  {
+				  memset(M_Last, 0, 16);
+				  memcpy(M_Last,&Data_buff2[16*(n_block-1)], 16);
+				  size_temp = 16;
+			  } else
+			  {
+			  memset(M_Last, 0, 16);
+			  memcpy(M_Last, &Data_buff2[16*(n_block-1)], size_temp);
+			  }
+
+		  } else {
+			  memset(M_Last, 0, 16);
+			  memcpy(M_Last, Data_buff2, New_LenRX);
+			  size_temp = New_LenRX;
+		  }
+	  }
+
+	}
+
+}
+*/
+void CMAC_Finish(struct AES_ctx ctx, unsigned char* K1, unsigned char* K2, unsigned char* M, uint32_t len, unsigned char T[16])
+{
+	unsigned char padded[16];
+	unsigned char M_last[16];
+	unsigned char Y[16];
+
+	if(len == 16)
+		{
+			XOR_16bytes(M,K1, M_last);
+		}
+		else {
+			padding(M, padded, len%16);
+			XOR_16bytes(padded,K2, M_last);
+		}
+	XOR_16bytes(T, M_last, Y);
+	AES_ECB_encrypt(&ctx, Y, T);
+}
+
+
+void AES_CMAC(unsigned char* K, unsigned char* M, uint32_t len, unsigned char* T)
+{
+	struct AES_ctx ctx;
+	unsigned char K1[16];		//K1 128-bit subkeys 1
+	unsigned char K2[16];		//K2 128-bit subkeys 2
+	unsigned char padded[16];
+
+	unsigned char X[16];
+	unsigned char Y[16];
+
+	unsigned char M_last[16]; 		//is the last block xor-ed with K1 or K2
+	uint32_t n = 0; 			//for number of blocks to be processed
+	uint32_t flag = 0; 			//for denoting if last block is complete or not
+
+	Generate_Subkey(K, K1, K2);
+	AES_init_ctx(&ctx, K);
+
+	n = ceil(len/16.0);
+	if(n == 0)
+	{
+		n = 1;
+		flag = 0;
+	} else {
+		if(len%16==0)
+			flag = 1;
+			else {
+				flag = 0;
+			}
+	}
+
+	if(flag == 1)
+	{
+		XOR_16bytes(&M[16*(n-1)],K1, M_last);
+	}
+	else {
+		padding(&M[16*(n-1)], padded, len%16);
+		XOR_16bytes(padded,K2, M_last);
+	}
+
+	memcpy(X, const_Zero, 16);
+
+	//method 1: using ECB
+	for(int i = 0; i < (n-1);i++)
+	{
+		XOR_16bytes(X, &M[16*i], Y);
+		AES_ECB_encrypt(&ctx,Y, X);
+	}
+	XOR_16bytes(M_last, X, Y);
+	AES_ECB_encrypt(&ctx, Y, T);
+}
+
+
+
+void padding ( unsigned char *M_last, unsigned char *pad, uint32_t len)
+{
+	for (int j=0; j<16; j++ ) {
+		if ( j < len) {
+			pad[j] = M_last[j];
+		} else if ( j == len) {
+			pad[j] = 0x80;
+		} else {
+			pad[j] = 0x00;
+		}
+	}
+}
+
+void Generate_Subkey(unsigned char* K, unsigned char* K1, unsigned char* K2)
+{
+	struct AES_ctx ctx;
+	unsigned char temp[16];
+	unsigned char L[16];
+
+	AES_init_ctx(&ctx, K);
+	AES_ECB_encrypt(&ctx,const_Zero, L);
+	//Hex2string(L, L1);  //show result AES-128(key,0)
+
+	if((L[0] & 0x80) == 0) //if MSB(L) = 0 then K1 := L << 1
+		LeftShift_OneBit(L,K1);
+	else  // else K1 := (L << 1) XOR const_Rb;
+	{
+		LeftShift_OneBit(L,temp);
+		XOR_16bytes(temp, const_Rb, K1);
+
+	}
+
+	if((K1[0] & 0x80) == 0) //if MSB(K1) = 0 then K2 := K1 << 1
+		LeftShift_OneBit(K2, K1);
+	else  // else K2 := (K1 << 1) XOR const_Rb
+	{
+		LeftShift_OneBit(K1,temp);
+		XOR_16bytes(temp, const_Rb, K2);
+	}
+}
+
+void XOR_16bytes(unsigned char *a, unsigned char *b, unsigned char *out)
+  {
+	  int i;
+	  for (i=0;i<16; i++)
+	  {
+		  out[i] = a[i] ^ b[i];
+	  }
+  }
+
+void LeftShift_OneBit(unsigned char *input,unsigned char *output)
+ {
+	 int i;
+	 unsigned char overflow = 0;
+
+	 for ( i=15; i>=0; i-- ) {
+		 output[i] = input[i] << 1;
+		 output[i] |= overflow;
+		 overflow = (input[i] & 0x80)?1:0;
+	 }
+	 return;
+ }
+
+void splitting8to4(unsigned char value, unsigned char byte[2])
+{
+	byte[0] = value >> 4;     // high byte
+	byte[1] = value & 0x0F; // low byte
+}
+
+void Hex2string(unsigned char* input, unsigned char* output)
+{
+	int j = 0;
+	uint8_t byte_arr[2];
+	  for(int i =0; i<16; i++)
+			{
+				splitting8to4(input[i],byte_arr);
+				for(int z = 0; z< 2; z ++)
+				{
+					if(byte_arr[z] < 10)
+						output[j] = byte_arr[z] + 48;
+					else output[j] = byte_arr[z] + 87;
+
+					j++;
+				}
+				memset(byte_arr, 0, sizeof(byte_arr));
+			}
+}
+
+
+
+
+

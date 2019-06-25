@@ -35,7 +35,7 @@ Src/menu.o: ../Src/menu.c C:/Git/SFBL_Tuan/DEMO1/Inc/main.h \
  C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h \
  C:/Git/SFBL_Tuan/DEMO1/Inc/common.h \
  C:/Git/SFBL_Tuan/DEMO1/Inc/flash_if.h C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h \
- C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h
+ C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h ../Src/cmac.h ../Src/aes.h
 
 C:/Git/SFBL_Tuan/DEMO1/Inc/main.h:
 
@@ -116,3 +116,7 @@ C:/Git/SFBL_Tuan/DEMO1/Inc/flash_if.h:
 C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h:
 
 C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h:
+
+../Src/cmac.h:
+
+../Src/aes.h:

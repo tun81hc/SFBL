@@ -1,0 +1,65 @@
+/*
+ * SHE.c
+ *
+ *  Created on: Jun 18, 2019
+ *      Author: AUP81HC
+ */
+#include "SHE.h"
+
+
+
+#define Nb 4
+#define Nk 4        // The number of 32 bit words in a key.
+#define Nr 10       // The number of rounds in AES Cipher.
+
+uint8_t state_t[4][4];
+
+
+void CND_ENC_ECB(uint8_t Key_ID, uint8_t* PlainText, uint8_t* HyperText)
+{
+	  memcpy((char*)HyperText,(char*)PlainText, 32);
+}
+
+
+void CND_DEC_ECB(uint8_t Key_ID, uint8_t* HyperText)
+{
+
+}
+
+
+void CND_ENC_CBC(uint8_t Key_ID, uint8_t* PlainText, uint32_t length, uint8_t* HyperText)
+{
+
+}
+
+
+void CND_DEC_CBC(uint8_t Key_ID, uint8_t* HyperText, uint32_t length)
+{
+
+}
+
+
+static void Cipher(state_t* state, const uint8_t* RoundKey)
+{
+  uint8_t round = 0;
+
+  // Add the First round key to the state before starting the rounds.
+  AddRoundKey(0, state, RoundKey);
+
+  // There will be Nr rounds.
+  // The first Nr-1 rounds are identical.
+  // These Nr-1 rounds are executed in the loop below.
+  for (round = 1; round < Nr; ++round)
+  {
+    SubBytes(state);
+    ShiftRows(state);
+    MixColumns(state);
+    AddRoundKey(round, state, RoundKey);
+  }
+
+  // The last round is given below.
+  // The MixColumns function is not here in the last round.
+  SubBytes(state);
+  ShiftRows(state);
+  AddRoundKey(Nr, state, RoundKey);
+}

@@ -4,11 +4,14 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Src/KeyMng.c \
+../Src/SHE.c \
+../Src/aes.c \
+../Src/cmac.c \
 ../Src/common.c \
 ../Src/flash_if.c \
 ../Src/main.c \
 ../Src/menu.c \
-../Src/stm32l476g_eval.c \
 ../Src/stm32l4xx_hal_msp.c \
 ../Src/stm32l4xx_it.c \
 ../Src/syscalls.c \
@@ -16,11 +19,14 @@ C_SRCS += \
 ../Src/ymodem.c 
 
 OBJS += \
+./Src/KeyMng.o \
+./Src/SHE.o \
+./Src/aes.o \
+./Src/cmac.o \
 ./Src/common.o \
 ./Src/flash_if.o \
 ./Src/main.o \
 ./Src/menu.o \
-./Src/stm32l476g_eval.o \
 ./Src/stm32l4xx_hal_msp.o \
 ./Src/stm32l4xx_it.o \
 ./Src/syscalls.o \
@@ -28,11 +34,14 @@ OBJS += \
 ./Src/ymodem.o 
 
 C_DEPS += \
+./Src/KeyMng.d \
+./Src/SHE.d \
+./Src/aes.d \
+./Src/cmac.d \
 ./Src/common.d \
 ./Src/flash_if.d \
 ./Src/main.d \
 ./Src/menu.d \
-./Src/stm32l476g_eval.d \
 ./Src/stm32l4xx_hal_msp.d \
 ./Src/stm32l4xx_it.d \
 ./Src/syscalls.d \

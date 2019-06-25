@@ -23,7 +23,6 @@
 #include "menu.h"
 
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -37,7 +36,13 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+	//CMAC variable
 
+unsigned char* CodeVerify;
+
+extern uint32_t _stext;
+extern uint32_t _etext;
+uint32_t length=0;
 
 
 /* USER CODE END PD */
@@ -72,8 +77,10 @@ static void MX_CRC_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
+
 int main(void)
 {
+	length = &_etext - &_stext;
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */

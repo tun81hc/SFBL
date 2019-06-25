@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="System" key="selection"/>
+		<item value="const_Rb" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="System"/>
-			<item value="Flash"/>
-			<item value="JumpToApplication"/>
-			<item value="jump"/>
+			<item value="const_Rb"/>
+			<item value="con_Rb"/>
+			<item value="key_CMAC"/>
 			<item value="Reset_Handler"/>
-			<item value="isr"/>
-			<item value="reset"/>
-			<item value="CrcHandle"/>
+			<item value="24b4"/>
+			<item value="HAL_Delay"/>
+			<item value="uwTick"/>
+			<item value="Reset"/>
 		</list>
 		<list key="replacehistory">
 			<item value="hcrc"/>
@@ -26,7 +26,7 @@
 		<item value="284" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="391" key="DIALOG_HEIGHT"/>
-		<item value="978" key="DIALOG_X_ORIGIN"/>
-		<item value="636" key="DIALOG_Y_ORIGIN"/>
+		<item value="1048" key="DIALOG_X_ORIGIN"/>
+		<item value="476" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

@@ -1,0 +1,99 @@
+/*
+ * SHE.c
+ *
+ *  Created on: Jun 18, 2019
+ *      Author: AUP81HC
+ */
+#include "SHE.h"
+#include "string.h"
+#include "math.h"
+
+#define Nb 4
+#define Nk 4        // The number of 32 bit words in a key.
+#define Nr 10       // The number of rounds in AES Cipher.
+static struct AES_ctx ctx
+typedef uint8_t state_t[4][4];
+
+
+void CMD_ENC_START(struct AES_ctx ctx, uint8_t Key_ID, uint8_t* Key)
+{
+	Select_Key(Key_ID, Key);
+	AES_init_ctx(&ctx, Key);
+}
+
+
+//ECB Encryption Process
+void CMD_ENC_ECB_UPDATE(struct AES_ctx ctx, uint8_t* Key, uint8_t length, uint8_t* PlainText, uint8_t* CipherText)
+{
+	uint8_t pad[16];
+	if(length == 16)
+		AES_ECB_encrypt(&ctx, PlainText, CipherText);
+	else if(length < 16)
+	{
+		padding (PlainText, pad, length);
+		AES_ECB_encrypt(&ctx, pad, CipherText);
+	}
+}
+
+void CMD_ENC_ECB_FINISH(struct AES_ctx ctx, uint8_t Key_ID, uint8_t* PlainText, uint8_t* CipherText)
+{
+
+}
+
+void CMD_DEC_ECB(struct AES_ctx ctx, uint8_t* CipherText)
+{
+	AES_ECB_decrypt(&ctx, CipherText);
+}
+
+
+//CBC Encryption Process
+void CMD_ENC_CBC_UPDATE(struct AES_ctx ctx, uint8_t* Key,  uint32_t length, uint8_t* PlainText, uint8_t* CipherText)
+{
+	int block = 0;
+	int size_temp = 0;
+
+	block = length/16;
+	size_temp = length%16;
+
+	if(size_temp == 0)
+	{
+		AES_CBC_encrypt_buffer(&ctx, PlainText, length, CipherText);
+	} else {
+
+	}
+
+
+
+}
+
+void CMD_ENC_CBC_FINISH(uint8_t Key_ID, uint8_t* PlainText, uint32_t length, uint8_t* CipherText)
+{
+
+}
+
+
+
+void CMD_DEC_CBC(uint8_t Key_ID, uint8_t* CipherText, uint32_t length)
+{
+
+}
+
+
+void Select_Key(uint8_t Key_ID, unsigned char *Key)
+{
+ 	unsigned char Key1[] = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
+
+
+ 	switch(Key_ID){
+ 	case 1:
+ 		memcpy(Key1, Key, 16);
+ 		break;
+
+ 	case 2:
+ 		break;
+
+ 	default:
+ 		break;
+
+ 	}
+}

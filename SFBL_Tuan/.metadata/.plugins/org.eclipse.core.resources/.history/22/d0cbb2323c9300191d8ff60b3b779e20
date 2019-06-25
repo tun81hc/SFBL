@@ -1,0 +1,98 @@
+
+#include "flash_if.h"
+#include "KeyMng.h"
+typedef struct
+{
+	uint8_t KeyId;
+	KEY_FLAG KeyFlags;
+	uint8_t counter;
+	uint8_t reserved;
+	uint32_t KeyData[4];
+
+}Keyslot;
+Keyslot keyslot_t[10];
+uint32_t i=0;
+uint32_t* buff=(uint32_t*)&keyslot_t;
+uint32_t flashdestination= (uint32_t)0x08040000;
+SHE_ERROR_CODE update_key(uint8_t Id, uint32_t Data[4] )
+{
+	SHE_ERROR_CODE ErrorCode;
+
+	for(i=0;i<10;i++ )
+	{
+		if (keyslot_t[i].KeyFlags== KEYFLAG_WRITE_PROTECTION )
+		{
+			ErrorCode= ERC_KEY_WRITE_PROTECTED;
+		}
+		else
+		{
+			if(Id != keyslot_t[i].KeyId)
+				ErrorCode = ERC_KEY_NOT_AVAILABLE;
+			else
+			{
+				if(Id == keyslot_t[i].KeyId)
+				{
+
+					keyslot_t[i].KeyData[KEYMNG_INDEX_0] = 	Data[0];
+					keyslot_t[i].KeyData[KEYMNG_INDEX_1] = 	Data[1];
+					keyslot_t[i].KeyData[KEYMNG_INDEX_2] = 	Data[2];
+					keyslot_t[i].KeyData[KEYMNG_INDEX_3] = 	Data[3];
+					ErrorCode= ERC_NO_ERROR;
+				}
+				else
+					ErrorCode= ERC_GENERAL_ERROR;
+			}
+		}
+	}
+	return ErrorCode;
+}
+
+SHE_ERROR_CODE read_key( uint8_t Id, uint32_t result[4] )
+{
+	SHE_ERROR_CODE ErrorCode;
+	for(i=1;i<10;i++ )
+	{
+		if(Id != keyslot_t[i].KeyId)
+			ErrorCode = ERC_KEY_NOT_AVAILABLE;
+		else
+		{
+			if(Id ==keyslot_t[i].KeyId)
+			{
+				result[0] = keyslot_t[i].KeyData[KEYMNG_INDEX_0];
+				result[1] = keyslot_t[i].KeyData[KEYMNG_INDEX_1];
+				result[2] = keyslot_t[i].KeyData[KEYMNG_INDEX_2];
+				result[3] = keyslot_t[i].KeyData[KEYMNG_INDEX_3];
+				ErrorCode= ERC_NO_ERROR;
+			}
+		}
+	}
+	return ErrorCode;
+}
+void write_flash()
+{
+	HAL_FLASH_Unlock();
+	FLASH_If_Erase(0x080F F800);
+	i=sizeof(keyslot_t)/4;
+	FLASH_If_Write(&flashdestination,buff,i);
+}
+void intkey()
+{
+	keyslot_t[0].KeyFlags= KEYFLAG_WRITE_PROTECTION;
+	keyslot_t[1].KeyFlags= KEYFLAG_DEBUGGER_PROTECTION;
+	keyslot_t[2].KeyFlags= KEYFLAG_VERIFY_ONLY;
+	keyslot_t[3].KeyFlags= KEYFLAG_KEY_USAGE;
+	keyslot_t[4].KeyFlags= KEYFLAG_KEY_USAGE;
+	keyslot_t[5].KeyFlags= KEYFLAG_KEY_USAGE;
+	keyslot_t[6].KeyFlags= KEYFLAG_KEY_USAGE;
+	keyslot_t[7].KeyFlags= KEYFLAG_KEY_USAGE;
+	keyslot_t[8].KeyFlags= KEYFLAG_KEY_USAGE;
+	keyslot_t[9].KeyFlags= KEYFLAG_KEY_USAGE;
+	for(i=0;i<10;i++ )
+	{
+		keyslot_t[i].KeyId=i;
+		keyslot_t[i].counter=0;
+	}
+}
+
+
+

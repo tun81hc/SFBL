@@ -81,6 +81,7 @@ SECTIONS
   .text :
   {
     . = ALIGN(8);
+	_stext = .;
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.glue_7)         /* glue arm to thumb code */
@@ -93,7 +94,7 @@ SECTIONS
     . = ALIGN(8);
     _etext = .;        /* define a global symbols at end of code */
   } >FLASH
-
+  
   /* Constant data goes into FLASH */
   .rodata :
   {

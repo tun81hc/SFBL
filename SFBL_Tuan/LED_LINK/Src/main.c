@@ -24,7 +24,7 @@
 //
 __attribute__((__section__(".user_data"))) uint8_t RefMAC[16]={0x26,0xf0,0xdf,0x64,0xad,0x58,0x97,0x98,0x92,0x92,0x66,0x09,0xc5,0xca,0x61,0x07};
 
-__attribute__((__section__(".length_application"))) uint32_t length_app = 1024;
+__attribute__((__section__(".length_application"))) uint32_t length_app = 2048;
 
 extern uint32_t _stext;
 extern uint32_t _etext;

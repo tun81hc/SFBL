@@ -1,4 +1,9 @@
-
+/*
+ * KeyMng.h
+ *
+ *  Created on: Jun 18, 2019
+ *      Author: LAS81HC
+ */
 
 #ifndef KEYMNG_H_
 #define KEYMNG_H_
@@ -14,8 +19,10 @@ typedef enum
 	KEYFLAG_KEY_USAGE                = (0x10U),
 	KEYFLAG_WILDCARD                 = (0x08U),
 	KEYFLAG_VERIFY_ONLY              = (0x04U),
+	KEYFLAG_SLOT_EMPTY               = (0x12U),
 	KEYFLAG_PLAIN_KEY                = (0x02U)
 }KEY_FLAG;
+
 typedef enum {
 	ERC_NO_ERROR = 0,
 	ERC_SEQUENCE_ERROR,
@@ -31,8 +38,8 @@ typedef enum {
 	ERC_MEMORY_FAILURE,
 	ERC_GENERAL_ERROR=3
 } SHE_ERROR_CODE;
-SHE_ERROR_CODE update_key(uint8_t Id, uint32_t Data[4] );
-SHE_ERROR_CODE read_key( uint8_t Id, uint32_t result[4] );
-void write_flash();
-void intkey();
+SHE_ERROR_CODE KeyMng_UpdateKey(uint8_t Id, uint32_t* Data );
+SHE_ERROR_CODE KeyMng_ReadKey( uint8_t Id, uint32_t* result );
+void KeyMng_WriteKey();
+void KeyMng_Int();
 #endif /* KEYMNG_H_ */

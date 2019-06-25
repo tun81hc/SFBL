@@ -11,7 +11,7 @@
 #include "stm32l4xx_hal.h"
 #include "aes.h"
 #include "cmac.h"
-#include "KeyMng.h"
+
 
 void CMD_INIT(unsigned char Key_ID, unsigned char Key[16]);
 

@@ -1,4 +1,9 @@
-
+/*
+ * KeyMng.c
+ *
+ *  Created on: Jun 18, 2019
+ *      Author: LAS81HC
+ */
 #include "flash_if.h"
 #include "KeyMng.h"
 typedef struct
@@ -8,16 +13,18 @@ typedef struct
 	uint8_t counter;
 	uint8_t reserved;
 	uint32_t KeyData[4];
-
 }Keyslot;
+
 Keyslot keyslot_t[10];
 uint32_t i=0;
 uint32_t* buff=(uint32_t*)&keyslot_t;
-uint32_t flashdestination= (uint32_t)0x080FF800;
-SHE_ERROR_CODE update_key(uint8_t Id, uint32_t Data[4] )
-{
-	SHE_ERROR_CODE ErrorCode;
+uint32_t flashdestination= (uint32_t)0x08080000;
+uint32_t num1,num2,num3,num;
+uint32_t res;
+SHE_ERROR_CODE ErrorCode;
 
+SHE_ERROR_CODE KeyMng_UpdateKey(uint8_t Id, uint32_t* Data )
+{
 	for(i=0;i<10;i++ )
 	{
 		if (keyslot_t[i].KeyFlags== KEYFLAG_WRITE_PROTECTION )
@@ -32,7 +39,6 @@ SHE_ERROR_CODE update_key(uint8_t Id, uint32_t Data[4] )
 			{
 				if(Id == keyslot_t[i].KeyId)
 				{
-
 					keyslot_t[i].KeyData[KEYMNG_INDEX_0] = 	Data[0];
 					keyslot_t[i].KeyData[KEYMNG_INDEX_1] = 	Data[1];
 					keyslot_t[i].KeyData[KEYMNG_INDEX_2] = 	Data[2];
@@ -47,9 +53,12 @@ SHE_ERROR_CODE update_key(uint8_t Id, uint32_t Data[4] )
 	return ErrorCode;
 }
 
-SHE_ERROR_CODE read_key( uint8_t Id, uint32_t result[4] )
+SHE_ERROR_CODE KeyMng_ReadKey( uint8_t Id, uint32_t* result )
 {
-	SHE_ERROR_CODE ErrorCode;
+	for(i=0;i<10;i++)
+	{
+			keyslot_t[i]= *(Keyslot*)(0x08080000 +0x14*i);
+	}
 	for(i=1;i<10;i++ )
 	{
 		if(Id != keyslot_t[i].KeyId)
@@ -68,31 +77,22 @@ SHE_ERROR_CODE read_key( uint8_t Id, uint32_t result[4] )
 	}
 	return ErrorCode;
 }
-void write_flash()
+void KeyMng_WriteKey()
 {
 	HAL_FLASH_Unlock();
-	FLASH_If_Erase(0x080FF800);
-	i=sizeof(keyslot_t)/4;
+	FLASH_If_Erase(0x08080000);
+	i=sizeof(Keyslot)*10/4;
 	FLASH_If_Write(flashdestination,buff,i);
+	HAL_FLASH_Lock();
 }
-void intkey()
+void KeyMng_Int()
 {
-	keyslot_t[0].KeyFlags= KEYFLAG_WRITE_PROTECTION;
-	keyslot_t[1].KeyFlags= KEYFLAG_DEBUGGER_PROTECTION;
-	keyslot_t[2].KeyFlags= KEYFLAG_VERIFY_ONLY;
-	keyslot_t[3].KeyFlags= KEYFLAG_KEY_USAGE;
-	keyslot_t[4].KeyFlags= KEYFLAG_KEY_USAGE;
-	keyslot_t[5].KeyFlags= KEYFLAG_KEY_USAGE;
-	keyslot_t[6].KeyFlags= KEYFLAG_KEY_USAGE;
-	keyslot_t[7].KeyFlags= KEYFLAG_KEY_USAGE;
-	keyslot_t[8].KeyFlags= KEYFLAG_KEY_USAGE;
-	keyslot_t[9].KeyFlags= KEYFLAG_KEY_USAGE;
-	for(i=0;i<10;i++ )
+	for(i=0;i<10;i++)
 	{
 		keyslot_t[i].KeyId=i;
 		keyslot_t[i].counter=0;
 	}
-}
 
+}
 
 

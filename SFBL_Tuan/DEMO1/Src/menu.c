@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "ymodem.h"
 #include "cmac.h"
+#include "KeyMng.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -29,7 +30,7 @@ void SerialUpload(void);
 unsigned char Key[16];
 unsigned char T[16];
 unsigned char T1[32];
-
+uint8_t Key2[] = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
 
 /**
   * @brief  Download a file via serial port
@@ -130,6 +131,7 @@ void Main_Menu(void)
 	Serial_PutString((uint8_t *)"  Download image to the internal Flash ----------------- 1\r\n\n");
 	Serial_PutString((uint8_t *)"  Upload image from the internal Flash ----------------- 2\r\n\n");
 	Serial_PutString((uint8_t *)"  Execute the loaded application ----------------------- 3\r\n\n");
+	Serial_PutString((uint8_t *)"  Load Key to Flash ------------------------------------ 4\r\n\n");
 
 	/*
 	if(FlashProtection != FLASHIF_PROTECTION_NONE)
@@ -147,6 +149,7 @@ void Main_Menu(void)
 	*/
 	//Serial_PutString((uint8_t *)"  Enable the write protection -------------------------- 4\r\n\n");
 	Serial_PutString((uint8_t *)"==========================================================\r\n\n");
+
 
 
 	/* Clean the input path */
@@ -168,8 +171,8 @@ void Main_Menu(void)
 	  break;
 	case '3' :
 		Serial_PutString((uint8_t *)"Verify Application......\r\n\n");
-		Select_Key((uint8_t)1, Key);
-		//
+		//Select_Key((uint8_t)1, Key);
+		KeyMng_ReadKey(3, Key);
 		if(Verify_MAC(Key, (unsigned char *)0x08008020, 128, (unsigned char *)0x08008000)){
 			Serial_PutString((uint8_t *)"Program Verify SUCCESS !\r\n\n");
 			Serial_PutString((uint8_t *)"Start program execution......\r\n\n");
@@ -187,6 +190,12 @@ void Main_Menu(void)
 			JumpToApplication();
 		}
 		else Serial_PutString((uint8_t *)"Program Verify FAIL !\r\n\n");
+		break;
+
+	case '4':
+		KeyMng_Int();
+		KeyMng_UpdateKey(3,Key2);
+		KeyMng_WriteKey();
 		break;
 
 	//hidden feature: Calculate MAC !!!!!!

@@ -53,6 +53,9 @@ typedef  void (*pFunction)(void);
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+
+void Security_Access(void);
+void Menu_Intro(void);
 void Main_Menu(void);
 
 #endif  /* __MENU_H */

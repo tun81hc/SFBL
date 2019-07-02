@@ -25,9 +25,10 @@ void CMD_ENC_ECB(unsigned char* Key, unsigned char* PlainText, unsigned char* Ci
 	AES_ECB_encrypt(&ctx, PlainText, CipherText);
 }
 
-void CMD_DEC_ECB(unsigned char* CipherText)
+void CMD_DEC_ECB(unsigned char* PlainText)
 {
-	AES_ECB_decrypt(&ctx, CipherText);
+	//this function return CipherText value to PlainText varible
+	AES_ECB_decrypt(&ctx, PlainText);
 }
 
 //CBC Encryption Process

@@ -17,7 +17,7 @@ void Delay1(int num)
 }
 
 unsigned char MAC_Bootloader[16] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-bool Verify_MAC(unsigned char* K, unsigned char* M, uint32_t len, unsigned char* Reference_MAC)
+bool Verify_MAC(unsigned char* K, unsigned char* M, uint8_t len, unsigned char* Reference_MAC)
 {
 	AES_CMAC(K, M, len, MAC_Bootloader);
 	if (0 == memcmp(MAC_Bootloader, Reference_MAC, 16))

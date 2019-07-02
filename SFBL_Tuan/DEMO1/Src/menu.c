@@ -5,8 +5,9 @@
 #include "flash_if.h"
 #include "menu.h"
 #include "ymodem.h"
-#include "cmac.h"
 #include "KeyMng.h"
+#include "cmac.h"
+#include "string.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -26,11 +27,15 @@ void SerialUpload(void);
 
 /* Private functions ---------------------------------------------------------*/
 
-//Calculate CMAC
+//Calculate CMAC variable
 unsigned char Key[16];
 unsigned char T[16];
 unsigned char T1[32];
+
+//reprogramming variable
+uint8_t Ymodem_Data[9000];
 uint8_t Key2[] = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
+uint8_t RefMAC[16]={0x26,0xf0,0xdf,0x64,0xad,0x58,0x97,0x98,0x92,0x92,0x66,0x09,0xc5,0xca,0x61,0x07};
 
 /**
   * @brief  Download a file via serial port
@@ -40,16 +45,18 @@ uint8_t Key2[] = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x
 void SerialDownload(void)
 {
   uint8_t number[11] = {0};
-  uint32_t size = 0;
+  uint32_t sizeA = 0;
   COM_StatusTypeDef result;
 
   Serial_PutString((uint8_t *)"Waiting for the file to be sent ... (press 'a' to abort)\n\r");
-  result = Ymodem_Receive( &size );
+  result = Ymodem_Receive( &sizeA, Ymodem_Data);
+  for(int i = 0; i< 1000000; i++){}		//Delay
+
   if (result == COM_OK)
   {
-    Serial_PutString((uint8_t *)"\n\n\r Programming Completed Successfully!\n\r--------------------------------\r\n Name: ");
+    Serial_PutString((uint8_t *)"\n\n\r Receiving Completed Successfully!\n\r--------------------------------\r\n Name: ");
     Serial_PutString(aFileName);
-    Int2Str(number, size);
+    Int2Str(number, sizeA);
     Serial_PutString((uint8_t *)"\n\r Size: ");
     Serial_PutString(number);
     Serial_PutString((uint8_t *)" Bytes\r\n");
@@ -70,6 +77,25 @@ void SerialDownload(void)
   else
   {
     Serial_PutString((uint8_t *)"\n\rFailed to receive the file!\n\r");
+  }
+
+  //Reprogramming
+  if(Verify_MAC(Key2, &Ymodem_Data[32], sizeA, RefMAC)){
+		Serial_PutString((uint8_t *)"\r\nReprogramming SUCCESS !");
+		Serial_PutString((uint8_t *)"\r\nYour file Authentication and Integration!");
+		Serial_PutString((uint8_t *)"\r\nFLASHING to FLASH ............");
+		FLASH_If_Write(0x08008000, (uint32_t *)Ymodem_Data, sizeA);
+		Serial_PutString((uint8_t *)"\r\nDONE!!!\r\n\n");
+	    sizeA = 0;
+	    memset(Ymodem_Data, 0,sizeof(Ymodem_Data));
+  }
+  else {
+	  Serial_PutString((uint8_t *)"\r\nReprogramming FAIL !");
+	  Serial_PutString((uint8_t *)"\r\nYour file does not Authentication and Integration!");
+	  Serial_PutString((uint8_t *)"\r\nReenter New File !!!\r\n\n");
+	  sizeA = 0;
+	  memset(Ymodem_Data, 0,sizeof(Ymodem_Data));
+	  Main_Menu();
   }
 }
 
@@ -101,6 +127,60 @@ void SerialUpload(void)
   }
 }
 
+void Security_Access(void)
+{
+	uint8_t text[100];
+	int i = 0;
+	uint8_t buff = 0;
+	uint8_t password[8]= "abcd1234";
+
+	uint8_t flag_check_password = 0;
+	do {
+	//enter password
+	Serial_PutString((uint8_t *)"\r\nEnter your password: ");
+		while(1)
+		{
+			HAL_UART_Receive(&huart2, &buff, 1, RX_TIMEOUT);
+			if(buff == 13)
+			{
+				break;
+			} else {
+			Serial_PutString((uint8_t *)"*");
+			text[i] = buff;
+			i++;
+			}
+		}
+
+		//check password
+		if(0 == memcmp(text, password, 8))
+		{
+			Serial_PutString((uint8_t *)"\nCorrect Password !\r\n\n");
+			flag_check_password = 1;	//password true
+		}
+		else
+		{
+			Serial_PutString((uint8_t *)"\nWrong Password !\r\n\n");
+			flag_check_password = 0;	//password wrong
+			//Set string received password NULL for the next string received
+			i = 0;
+			memset(text, 0, 100);
+		}
+	}while(flag_check_password == 0);
+}
+
+
+void Menu_Intro(void)
+{
+	Serial_PutString((uint8_t *)"\r\n======================================================================");
+	Serial_PutString((uint8_t *)"\r\n=              (C) COPYRIGHT 2015 STMicroelectronics                 =");
+	Serial_PutString((uint8_t *)"\r\n=                                                                    =");
+	Serial_PutString((uint8_t *)"\r\n=  STM32L4xx In-Application Programming Application  (Version 9.9.9) =");
+	Serial_PutString((uint8_t *)"\r\n=                                                                    =");
+	Serial_PutString((uint8_t *)"\r\n=                                   By Security Team                 =");
+	Serial_PutString((uint8_t *)"\r\n======================================================================");
+	Serial_PutString((uint8_t *)"\r\n\r\n");
+}
+
 /**
   * @brief  Display the Main Menu on HyperTerminal
   * @param  None
@@ -109,48 +189,14 @@ void SerialUpload(void)
 uint8_t key = 0;
 void Main_Menu(void)
 {
-  //static int i = 0;
-
-	//calculate length of Application
-	Serial_PutString((uint8_t *)"\r\n======================================================================");
-	Serial_PutString((uint8_t *)"\r\n=              (C) COPYRIGHT 2015 STMicroelectronics                 =");
-	Serial_PutString((uint8_t *)"\r\n=                                                                    =");
-	Serial_PutString((uint8_t *)"\r\n=  STM32L4xx In-Application Programming Application  (Version 1.0.0) =");
-	Serial_PutString((uint8_t *)"\r\n=                                                                    =");
-	Serial_PutString((uint8_t *)"\r\n=                                   By MCD Application Team          =");
-	Serial_PutString((uint8_t *)"\r\n======================================================================");
-	Serial_PutString((uint8_t *)"\r\n\r\n");
-
-  /* Test if any sector of Flash memory where user application will be loaded is write protected */
-  //FlashProtection = FLASH_If_GetWriteProtectionStatus();
-
 	while (1)
 	{
-
 	Serial_PutString((uint8_t *)"\r\n=================== Main Menu ============================\r\n\n");
 	Serial_PutString((uint8_t *)"  Download image to the internal Flash ----------------- 1\r\n\n");
 	Serial_PutString((uint8_t *)"  Upload image from the internal Flash ----------------- 2\r\n\n");
-	Serial_PutString((uint8_t *)"  Execute the loaded application ----------------------- 3\r\n\n");
+	Serial_PutString((uint8_t *)"  Verify and Execute the loaded application ------------ 3\r\n\n");
 	Serial_PutString((uint8_t *)"  Load Key to Flash ------------------------------------ 4\r\n\n");
-
-	/*
-	if(FlashProtection != FLASHIF_PROTECTION_NONE)
-	{
-	  Serial_PutString((uint8_t *)"  Disable the write protection ------------------------- 4\r\n\n");
-	  if((FlashProtection & (FLASHIF_PROTECTION_PCROPENABLED | FLASHIF_PROTECTION_RDPENABLED)) != 0x0)
-	  {
-		Serial_PutString((uint8_t *)"  The write protection disable will erase all the flash\r\n");
-		Serial_PutString((uint8_t *)"  Please use STlink utility to disable the protection  \r\n\n");
-		while(1);
-	  }
-	}
-	else
-	{
-	*/
-	//Serial_PutString((uint8_t *)"  Enable the write protection -------------------------- 4\r\n\n");
-	Serial_PutString((uint8_t *)"==========================================================\r\n\n");
-
-
+	Serial_PutString((uint8_t *)"=========================================================\r\n\n");
 
 	/* Clean the input path */
 	__HAL_UART_FLUSH_DRREGISTER(&huart2);
@@ -166,13 +212,16 @@ void Main_Menu(void)
 
 	  break;
 	case '2' :
+
 	  /* Upload user application from the Flash */
 	  SerialUpload();
 	  break;
+
 	case '3' :
+		/* Verify application and execute application*/
 		Serial_PutString((uint8_t *)"Verify Application......\r\n\n");
 		//Select_Key((uint8_t)1, Key);
-		KeyMng_ReadKey(3, Key);
+		KeyMng_ReadKey(3,(uint32_t*)Key);
 		if(Verify_MAC(Key, (unsigned char *)0x08008020, 128, (unsigned char *)0x08008000)){
 			Serial_PutString((uint8_t *)"Program Verify SUCCESS !\r\n\n");
 			Serial_PutString((uint8_t *)"Start program execution......\r\n\n");
@@ -193,14 +242,17 @@ void Main_Menu(void)
 		break;
 
 	case '4':
+		/* Download Key in the Flash */
+		Serial_PutString((uint8_t *)"Key Updating......\r\n\n");
 		KeyMng_Int();
-		KeyMng_UpdateKey(3,Key2);
+		KeyMng_UpdateKey(3,(uint32_t*)Key2);
 		KeyMng_WriteKey();
+		Serial_PutString((uint8_t *)"DONE !!\r\n\n");
 		break;
 
-	//hidden feature: Calculate MAC !!!!!!
+	/*hidden feature: Calculate MAC !!!!!! */
 	case 'm':
-		Select_Key((uint8_t)1, Key);
+		KeyMng_ReadKey(3,(uint32_t*)Key);
 		AES_CMAC(Key , (unsigned char*)0x08008020, 128, T);
 		Hex2string(T, T1);
 		//FLASH_If_Write((uint32_t)0x08008000,(uint32_t *)T, 16);
@@ -210,39 +262,6 @@ void Main_Menu(void)
 		Serial_PutString((uint8_t *)"\r\n\n");
 		break;
 
-      /*
-    case '4' :
-      if (FlashProtection != FLASHIF_PROTECTION_NONE)
-      {
-        // Disable the write protection
-        if (FLASH_If_WriteProtectionConfig(FLASHIF_WRP_DISABLE) == FLASHIF_OK)
-        {
-          Serial_PutString((uint8_t *)"Write Protection disabled...\r\n");
-          Serial_PutString((uint8_t *)"System will now restart...\r\n");
-          // Launch the option byte loading
-          HAL_FLASH_OB_Launch();
-        }
-        else
-        {
-          Serial_PutString((uint8_t *)"Error: Flash write un-protection failed...\r\n");
-        }
-      }
-      else
-      {
-        if (FLASH_If_WriteProtectionConfig(FLASHIF_WRP_ENABLE) == FLASHIF_OK)
-        {
-          Serial_PutString((uint8_t *)"Write Protection enabled...\r\n");
-          Serial_PutString((uint8_t *)"System will now restart...\r\n");
-          // Launch the option byte loading
-          HAL_FLASH_OB_Launch();
-        }
-        else
-        {
-          Serial_PutString((uint8_t *)"Error: Flash write protection failed...\r\n");
-        }
-      }
-      break;
-      */
 	default:
 	Serial_PutString((uint8_t *)"Invalid Number ! ==> The number should be either 1, 2, 3 or 4\r");
 	break;

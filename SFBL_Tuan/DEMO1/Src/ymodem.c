@@ -293,12 +293,12 @@ uint8_t CalcChecksum(const uint8_t *p_data, uint32_t size)
   * @param  p_size The size of the file.
   * @retval COM_StatusTypeDef result of reception/programming
   */
-COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
+COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size, uint8_t Array_Data_Ymodem[*p_size] )
 {
   uint32_t i, packet_length, session_done = 0, file_done, errors = 0, session_begin = 0;
-  uint32_t flashdestination, ramsource, filesize;
+  uint32_t flashdestination, ramsource; //, filesize
   uint8_t *file_ptr;
-  uint8_t file_size[FILE_SIZE_LENGTH], tmp, packets_received;
+  uint8_t tmp, packets_received; //file_size[FILE_SIZE_LENGTH]
   COM_StatusTypeDef result = COM_OK;
 
   /* Initialize flashdestination variable */
@@ -347,17 +347,6 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                       aFileName[i++] = *file_ptr++;
                     }
 
-                    /* File size extraction */
-                    aFileName[i++] = '\0';
-                    i = 0;
-                    file_ptr ++;
-                    while ( (*file_ptr != 0) && (i < FILE_SIZE_LENGTH))
-                    {
-                      file_size[i++] = *file_ptr++;
-                    }
-                    file_size[i++] = '\0';
-                    Str2Int(file_size, &filesize);
-
                     /* Test the size of the image to be sent */
                     /* Image size is greater than Flash size */
                     if (*p_size > (USER_FLASH_SIZE + 1))
@@ -370,7 +359,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                     }
                     /* erase user application area */
                     FLASH_If_Erase(APPLICATION_ADDRESS);
-                    *p_size = filesize;
+                    //*p_size = filesize;
 
                     Serial_PutByte(ACK);
                     Serial_PutByte(CRC16);
@@ -386,21 +375,10 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                 }
                 else /* Data packet */
                 {
-                  ramsource = (uint32_t) & aPacketData[PACKET_DATA_INDEX];
-
-                  /* Write received data in Flash */
-                  if (FLASH_If_Write(flashdestination, (uint32_t*) ramsource, packet_length/4) == FLASHIF_OK)                   
-                  {
-                    flashdestination += packet_length;
-                    Serial_PutByte(ACK);
-                  }
-                  else /* An error occurred while writing to Flash memory */
-                  {
-                    /* End session */
-                    Serial_PutByte(CA);
-                    Serial_PutByte(CA);
-                    result = COM_DATA;
-                  }
+                  ramsource = (uint32_t) &aPacketData[PACKET_DATA_INDEX];
+                  memcpy(&Array_Data_Ymodem[*p_size],(uint32_t*) ramsource,  packet_length);
+				  *p_size += packet_length;
+				  Serial_PutByte(ACK);
                 }
                 packets_received ++;
                 session_begin = 1;
@@ -413,6 +391,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
           Serial_PutByte(CA);
           result = COM_ABORT;
           break;
+
         default:
           if (session_begin > 0)
           {

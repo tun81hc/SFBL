@@ -23,125 +23,49 @@
 #include "menu.h"
 
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-	//CMAC variable
-
-unsigned char* CodeVerify;
-
 extern uint32_t _stext;
 extern uint32_t _etext;
 uint32_t length=0;
-
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
+//uint32_t randomX = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_CRC_Init(void);
-/* USER CODE BEGIN PFP */
+static void MX_RNG_Init(void);
 
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
 
 int main(void)
 {
-	length = &_etext - &_stext;
-  /* USER CODE BEGIN 1 */
+	length = &_etext - &_stext;  //calculate size of .TEXT
+	HAL_Init();
+	SystemClock_Config();
+	MX_GPIO_Init();
+	MX_CRC_Init();
 
-  /* USER CODE END 1 */
-  
+	/* USER CODE BEGIN 2 */
+	MX_RNG_Init();
+	MX_USART2_UART_Init();
 
-  /* MCU Configuration--------------------------------------------------------*/
+	//randomX = HAL_RNG_GetRandomNumber(&hrng);
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	FLASH_If_Init();
+	Menu_Intro();
+	//Security_Access();
+	Main_Menu();
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE END 2 */
 
-  /* USER CODE END Init */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	while (1)
+	{
+	/* USER CODE END WHILE */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-
-  MX_CRC_Init();
-  /* USER CODE BEGIN 2 */
-
-
-  //{
-	  FLASH_If_Init();
-	  MX_USART2_UART_Init();
-	  //FLASH_If_Erase(0x08008000);
-	  //HAL_Delay(100);
-	  Main_Menu();
-  //}
-	  /*      else
-    //{
-      // Test if user code is programmed starting from address "APPLICATION_ADDRESS"
-      if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
-      {
-    	//SCB->VTOR= 0x8008000;
-        // Jump to user application
-        JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-        JumpToApplication = (pFunction) JumpAddress;
-        // Initialize user application's Stack Pointer
-        __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-        JumpToApplication();
-      }
-*/
-    //}
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+	/* USER CODE BEGIN 3 */
+	}
+	/* USER CODE END 3 */
 }
 
 /**
@@ -164,7 +88,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLM = 1;
   RCC_OscInitStruct.PLL.PLLN = 20;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
-  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV8;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -183,8 +107,9 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_RNG;
   PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.RngClockSelection = RCC_RNGCLKSOURCE_PLL;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -232,6 +157,34 @@ static void MX_CRC_Init(void)
   /* USER CODE END CRC_Init 2 */
 
 }
+
+/**
+  * @brief RNG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RNG_Init(void)
+{
+
+  /* USER CODE BEGIN RNG_Init 0 */
+
+  /* USER CODE END RNG_Init 0 */
+
+  /* USER CODE BEGIN RNG_Init 1 */
+
+  /* USER CODE END RNG_Init 1 */
+  hrng.Instance = RNG;
+  if (HAL_RNG_Init(&hrng) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RNG_Init 2 */
+
+  /* USER CODE END RNG_Init 2 */
+
+}
+
+
 
 /**
   * @brief USART2 Initialization Function

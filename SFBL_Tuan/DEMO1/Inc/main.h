@@ -37,7 +37,10 @@ extern "C" {
 extern pFunction JumpToApplication;
 extern uint32_t JumpAddress;
 
+
 extern uint8_t aFileName[FILE_NAME_LENGTH];
+
+RNG_HandleTypeDef hrng;
 
 CRC_HandleTypeDef hcrc;
 UART_HandleTypeDef huart2;

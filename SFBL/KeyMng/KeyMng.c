@@ -18,7 +18,7 @@ typedef struct
 Keyslot keyslot_t[10];
 uint32_t i=0;
 uint32_t* buff=(uint32_t*)&keyslot_t;
-uint32_t flashdestination= (uint32_t)0x08040000;
+
 uint32_t num1,num2,num3,num;
 uint32_t res;
 SHE_ERROR_CODE KeyMng_UpdateKey(uint8_t Id, uint32_t* Data )
@@ -33,7 +33,7 @@ SHE_ERROR_CODE KeyMng_UpdateKey(uint8_t Id, uint32_t* Data )
 		}
 		else
 		{
-			if(Id != keyslot_t[i].KeyId)
+			if(keyslot_t[i].KeyFlags==KEYFLAG_SLOT_EMPTY)
 				ErrorCode = ERC_KEY_NOT_AVAILABLE;
 			else
 			{
@@ -79,23 +79,22 @@ SHE_ERROR_CODE KeyMng_ReadKey( uint8_t Id, uint32_t* result )
 	}
 	return ErrorCode;
 }
-void KeyMng_WriteKey()
+void KeyMng_WriteKey(void)
 {
+	uint32_t flashdestination= (uint32_t)0x08040000;
 	FLASH_Unlock();
 	FLASH_If_Erase_Data(ADDR_FLASH_SECTOR_6,0x2000 );
 	i=sizeof(Keyslot)*10/4;
 	FLASH_If_Write(&flashdestination,buff,i);
 	FLASH_Lock();
 }
-void KeyMng_Int()
+void KeyMng_Int(void)
 {
-
 	for(i=0;i<10;i++)
 	{
 		keyslot_t[i].KeyId=i;
 		keyslot_t[i].counter=0;
 	}
-
 }
 
 

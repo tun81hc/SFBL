@@ -4,13 +4,16 @@
 #include "flash_if.h"
 #include "menu.h"
 #include "ymodem.h"
-
-
+#include "KeyMng.h"
+#include "cmac.h"
+uint8_t BuffAppRe[6000];
 unsigned char Keydata[16]={0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
 //unsigned char Reference_MAC[16]={0x2E,0x5B,0xC7,0xB5,0x7C,0xA4,0xA8,0xA2,0x97,0xDA,0xA8,0x38,0x59,0xAA,0x8D,0x3B};
-uint8_t result[16];
+uint8_t result[16],resultkey[16];
 unsigned char K1[16], K2[16],X[16],MAC;
-uint8_t RefMACApp[16];
+uint8_t RefMACApp[16], CMACresult[16];
+int32_t Size = 0;
+uint32_t flashadd= 0x08008000;
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -23,8 +26,9 @@ uint8_t tab_1024[1024] =
   {
     0
   };
-uint8_t FileName[FILE_NAME_LENGTH];
+uint8_t FileName[FILE_NAME_LENGTH], BuffApp;
 unsigned char x[16];
+
 
 /* Private function prototypes -----------------------------------------------*/
 void SerialDownload(void);
@@ -33,18 +37,23 @@ void SerialUpload(void);
 /* Private functions ---------------------------------------------------------*/
 
 /**
-  * @brief  Download a file via serial port
+  * @brief  Download a file via serial port10
   * @param  None
   * @retval None
   */
 
 void SerialDownload(void)
 {
+
   uint8_t Number[10] = "          ";
-  int32_t Size = 0;
+
 
   SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
-  Size = Ymodem_Receive(&tab_1024[0]);
+  Size = Ymodem_Receive(&tab_1024[0],(uint8_t*)BuffAppRe);
+  for(int i=0;i<100000;i++)
+  {
+
+  }
   if (Size > 0)
   {
     SerialPutString("\n\n\r Programming Completed Successfully!\n\r--------------------------------\r\n Name: ");
@@ -71,6 +80,28 @@ void SerialDownload(void)
   {
     SerialPutString("\n\rFailed to receive the file!\n\r");
   }
+  for(uint8_t i=0;i<16;i++)
+  {
+  	RefMACApp[i]= BuffAppRe[i];
+  }
+
+  KeyMng_ReadKey(3,(uint32_t*) result);
+  if (Verify_MAC(result, (unsigned char*)&BuffAppRe[16], Size-16,RefMACApp) == 1)
+  {
+	  //FLASH_If_Write(&flashadd, (uint32_t*) BuffAppRe, Size);
+
+	  FLASH_If_Write(&flashadd, (uint32_t*) BuffAppRe,Size/4 );
+
+	  SerialPutString("\n\r Flashing to FLASH successfully.............\n\r");
+  }
+  else
+  {
+	  SerialPutString("\n\r Flashing to FLASH fail....................\n\r");
+	  SerialPutString("\n\r Application is not authenticate...........\n\r");
+	  SerialPutString("\n\r Please re-programming application.........\n\r");
+	  Main_Menu();
+  }
+
 }
 
 /**
@@ -109,7 +140,7 @@ void SerialUpload(void)
 void Main_Menu(void)
 {
   uint8_t key = 0;
-  unsigned char CMACresult[16], CMACkeydata[16];
+  //unsigned char CMACresult[16], CMACkeydata[16];
   SerialPutString("\r\n======================================================================");
   SerialPutString("\r\n=              (C) COPYRIGHT 2011 STMicroelectronics                 =");
   SerialPutString("\r\n=                                                                    =");
@@ -118,7 +149,7 @@ void Main_Menu(void)
   SerialPutString("\r\n=                                   By MCD Application Team          =");
   SerialPutString("\r\n======================================================================");
   SerialPutString("\r\n\r\n");
-
+ // FLASH_If_Write(&flashadd, (uint32_t*) Keydata,64 );
   /* Test if any sector of Flash memory where user application will be loaded is write protected */
   if (FLASH_If_GetWriteProtectionStatus() == 0)   
   {
@@ -160,31 +191,33 @@ void Main_Menu(void)
     }
     else if (key == '4')  /*execute the new program*/
     {
+    	for(uint8_t i=0;i<100;i++)
+    	 {
+
+    	    	}
     	/*Read KeyData with KeyID*/
     	KeyMng_ReadKey(3,(uint32_t*) result);
     	SerialPutString("Calculate CMAC of application--------------------------- \r\n\n");
-    	AES_CMAC(result,(unsigned char*)0x08008010, 128, CMACresult);
+    	//AES_CMAC(result,(unsigned char*)0x08008010, 5488, CMACresult);
     	for(uint8_t i=0;i<16;i++)
     	{
     		RefMACApp[i]= *(uint8_t*)(0x8008000+0x01*i);
     	}
 
-    	if (Verify_MAC(result, (unsigned char*)0x08008010, 128,RefMACApp) == 1)
+    	if (Verify_MAC(result,(unsigned char *) 0x08008010, 5488,RefMACApp) == 1)
     	{
     		SerialPutString("Verify Application: PASS-------------------------------- \r\n\n");
     		SerialPutString("Execute the new program -------------------------------- \r\n\n");
-    				USART_DeInit(USART1);
-    		      	GPIO_DeInit(GPIOA);
-    		      	SCB->VTOR = APPLICATION_ADDRESS+0x10;
-    		      			__disable_irq();
-    		      JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4+0x10);
-
-    		      //JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS);
-    		       //Jump to user application
-    		      Jump_To_Application = (pFunction) ((uint32_t)JumpAddress);
-    		       //Initialize user application's Stack Pointer
-    		      __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS+0x10);
-    		     Jump_To_Application();
+			USART_DeInit(USART1);
+			GPIO_DeInit(GPIOA);
+			SCB->VTOR = APPLICATION_ADDRESS+0x10;
+					__disable_irq();
+			JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4+0x10);
+		   //Jump to user application
+		  Jump_To_Application = (pFunction) ((uint32_t)JumpAddress);
+		   //Initialize user application's Stack Pointer
+		  __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS+0x10);
+		 Jump_To_Application();
     	}
     	else
     		SerialPutString("Verify Application: FAIL-------------------------------- \r\n\n");
@@ -195,7 +228,7 @@ void Main_Menu(void)
     	KeyMng_Int();
     	KeyMng_UpdateKey(3,(uint32_t*)Keydata);
     	KeyMng_WriteKey();
-    	SerialPutString("Load key successfully ------------------------- \r\n\n");
+    	SerialPutString("Load key successfully -------------------------------------- \r\n\n");
     }
     else if ((key == 0x34) && (FlashProtection == 1))
     {

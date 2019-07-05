@@ -137,14 +137,14 @@ static int32_t Receive_Packet (uint8_t *data, int32_t *length, uint32_t timeout)
   * @param  buf: Address of the first byte.
   * @retval The size of the file.
   */
-int32_t Ymodem_Receive (uint8_t *buf)
+int32_t Ymodem_Receive (uint8_t *buf, uint8_t *BuffAppRe)
 {
   uint8_t packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD], file_size[FILE_SIZE_LENGTH], *file_ptr, *buf_ptr;
   int32_t i, packet_length, session_done, file_done, packets_received, errors, session_begin, size = 0;
-  uint32_t flashdestination, ramsource;
-
+  uint32_t  ramsource;
+  uint32_t lenght=0;
   /* Initialize flashdestination variable */
-  flashdestination = APPLICATION_ADDRESS;
+
 
   for (session_done = 0, errors = 0, session_begin = 0; ;)
   {
@@ -217,21 +217,24 @@ int32_t Ymodem_Receive (uint8_t *buf)
                 /* Data packet */
                 else
                 {
-                  memcpy(buf_ptr, packet_data + PACKET_HEADER, packet_length);
+                  /*memcpy(buf_ptr, packet_data + PACKET_HEADER, packet_length);
                   ramsource = (uint32_t)buf;
+                  memcpy(&BuffAppRe[lenght],(uint32_t*) ramsource,packet_length );*/
+                memcpy(buf_ptr, packet_data + PACKET_HEADER, packet_length);
+                ramsource = (uint32_t)buf;
+
+                memcpy(&BuffAppRe[lenght],(uint32_t*) ramsource,packet_length );
+                  lenght+=packet_length;
+                  Send_Byte(ACK);
 
                   /* Write received data in Flash */
-                  if (FLASH_If_Write(&flashdestination, (uint32_t*) ramsource, (uint16_t) packet_length/4)  == 0)
+
+                 /* if (FLASH_If_Write(&flashdestination, (uint32_t*) ramsource, (uint16_t) packet_length/4)  == 0)
                   {
                     Send_Byte(ACK);
-                  }
-                  else /* An error occurred while writing to Flash memory */
-                  {
-                    /* End session */
-                    Send_Byte(CA);
-                    Send_Byte(CA);
-                    return -2;
-                  }
+                    lenght+=packet_length;
+                  }*/
+
                 }
                 packets_received ++;
                 session_begin = 1;
@@ -266,7 +269,7 @@ int32_t Ymodem_Receive (uint8_t *buf)
       break;
     }
   }
-  return (int32_t)size;
+  return (int32_t)lenght;
 }
 
 /**

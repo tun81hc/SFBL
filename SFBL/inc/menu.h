@@ -34,7 +34,8 @@ typedef  void (*pFunction)(void);
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void Main_Menu(void);
-
+void Security_Access(void);
+void InttoString(uint32_t input, unsigned char *output);
 #endif  /* __MENU_H */
 
 /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE******/

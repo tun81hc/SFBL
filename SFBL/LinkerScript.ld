@@ -63,12 +63,19 @@ MEMORY
 {
   RAM (xrw)		: ORIGIN = 0x20000000, LENGTH = 128K
   ROM (rx)		: ORIGIN = 0x8000000, LENGTH = 512K
-  DATA(rwx)		: ORIGIN = 0x0804000, LENGTH = 128K 
+  DATA(rwx)		: ORIGIN = 0x0804000, LENGTH = 128K
+  KEYOEM(rwx)	: ORIGIN = 0x08060000, LENGTH = 1K 
 }
 
 /* Sections */
 SECTIONS
 {
+  .key :
+  {
+    . = ALIGN(4);
+     KEEP(*(.key))
+    . = ALIGN(4);
+  } > KEYOEM
   .user_data :
   {
     . = ALIGN(4);

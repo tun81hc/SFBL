@@ -7,7 +7,7 @@
 #include "SHE.h"
 #include "string.h"
 #include "stdio.h"
-
+#include "KeyMng.h"
 
 static struct AES_ctx ctx;
 //HAL_StatusTypeDef status;
@@ -15,7 +15,7 @@ static struct AES_ctx ctx;
 //Init
 void CMD_INIT(unsigned char Key_ID, unsigned char Key[16])
 {
-	KeyMng_ReadKey(Key_ID,Key);
+	KeyMng_ReadKey((uint8_t)Key_ID,(uint32_t*)Key);
 	AES_init_ctx(&ctx, Key);
 }
 

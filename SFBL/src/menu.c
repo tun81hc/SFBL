@@ -6,6 +6,7 @@
 #include "ymodem.h"
 #include "KeyMng.h"
 #include "cmac.h"
+#include "string.h"
 uint8_t BuffAppRe[6000];
 unsigned char Keydata[16]={0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
 //unsigned char Reference_MAC[16]={0x2E,0x5B,0xC7,0xB5,0x7C,0xA4,0xA8,0xA2,0x97,0xDA,0xA8,0x38,0x59,0xAA,0x8D,0x3B};
@@ -145,23 +146,23 @@ uint8_t flag1 = 1;
 uint8_t count1 = 0;
 void Security_Access(void)
 {
-	SerialPutString("\r\n              Security Access                 ");
+	SerialPutString("\r\n                      Security Access                                     ");
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG,ENABLE);
 	RNG_Cmd(ENABLE);
 	memset(MAC1, 0, 16);
 	memset(MAC11, 0, 32);
-	SerialPutString((uint8_t *)"\r\nSecurity Code: ");
+	SerialPutString((uint8_t *)"\r\n     Security Code:    ");
 	while(RNG_GetFlagStatus(RNG_FLAG_DRDY) == RESET);
 	randomX = RNG_GetRandomNumber();
 	InttoString(randomX,arrRandom);
 	Serial_PutString((uint8_t *)arrRandom);
 	KeyMng_ReadKey(3,(uint32_t*) result);
-	AES_CMAC((uint32_t*) result, arrRandom, 10, MAC1);
+	AES_CMAC((unsigned char*) result,(unsigned char*) arrRandom, 10, MAC1);
 	Hex2string(MAC1,MAC11);
 
 	while(flag1 == 1)
 	{
-	SerialPutString((uint8_t *)"\r\nEnter CMAC: ");
+	SerialPutString((uint8_t *)"\r\nEnter CMAC:                                                    ");
 	GetInputString(MAC2);
 	for(int j=0; j< 32;j++)
 		{
@@ -174,7 +175,7 @@ void Security_Access(void)
 			else flag1 = 1;
 		}
 	memset(MAC2, 0, 32);
-	SerialPutString((uint8_t *)"\r\nVerify fail");
+	SerialPutString("You need to have permission to access-------------------------------- \r\n\n");
 	}
 	SerialPutString((uint8_t *)"\r\n Successfully\n\r");
 }

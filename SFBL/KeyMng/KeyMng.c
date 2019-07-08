@@ -39,6 +39,7 @@ SHE_ERROR_CODE KeyMng_UpdateKey(uint8_t Id, uint32_t* Data )
 			{
 				if(Id == keyslot_t[i].KeyId)
 				{
+
 					keyslot_t[i].KeyData[KEYMNG_INDEX_0] = 	Data[0];
 					keyslot_t[i].KeyData[KEYMNG_INDEX_1] = 	Data[1];
 					keyslot_t[i].KeyData[KEYMNG_INDEX_2] = 	Data[2];
@@ -96,5 +97,6 @@ void KeyMng_Int(void)
 		keyslot_t[i].counter=0;
 	}
 }
+
 
 

@@ -25,7 +25,7 @@ void Delay1(int num);
 void CMAC_Start(struct AES_ctx ctx, unsigned char* K, unsigned char K1[16], unsigned char K2[16]);
 void CMAC_Update(struct AES_ctx ctx, unsigned char* M, uint8_t *length, unsigned char X[16]);
 void CMAC_Finish(struct AES_ctx ctx, unsigned char* K1, unsigned char* K2, unsigned char* M, uint8_t *length, unsigned char T[16]);
-
+void AES_CMAC(unsigned char* K, unsigned char* M, uint32_t len, unsigned char* T);
 bool Verify_MAC(unsigned char* K, unsigned char* M, uint32_t len, unsigned char* Reference_MAC);
 
 #endif /* CMAC_H_ */

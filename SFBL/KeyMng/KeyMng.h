@@ -56,4 +56,5 @@ SHE_ERROR_CODE KeyMng_UpdateKey(uint8_t Id, uint32_t* Data );
 SHE_ERROR_CODE KeyMng_ReadKey( uint8_t Id, uint32_t* result );
 void KeyMng_WriteKey(void);
 void KeyMng_Int(void);
+void KeyMng_SecretKey(void);
 #endif /* KEYMNG_H_ */

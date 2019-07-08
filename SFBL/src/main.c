@@ -21,11 +21,13 @@
 extern pFunction Jump_To_Application;
 extern uint32_t JumpAddress;
 static void IAP_Init(void);
+void GPIO(void);
 Bootloader_State BL_State = Init;
-
+//__attribute__((__section__(".key"))) uint8_t SecretKey[16]={0x1c,0x7b,0x45,0x47,0x74,0xb9,0x50,0x6c,0x32,0x9b,0x11,0xc4,0xfa,0xf0,0x79,0x36};
 /*2b*/
 int main(void)
 {
+
 	IAP_Init();
 	GPIO();
 	SerialPutString("Booting.................................................\r\n\n");

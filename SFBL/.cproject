@@ -37,13 +37,9 @@
 								</option>
 								<option id="gnu.c.compiler.option.include.paths.115437266" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/StdPeriph_Driver/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/UDS&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Crypto&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/BSP&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/CMSIS/device&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/CMSIS/core&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SFBL/Ymodem}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SFBL/Utilities/STM32_EVAL/Common}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SFBL/Utilities/STM32_EVAL/STM3240_41_G_EVAL}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SFBL/KeyMng}&quot;"/>
@@ -187,4 +183,5 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

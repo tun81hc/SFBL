@@ -21,12 +21,18 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "menu.h"
-
+#include "string.h"
+#include "cmac.h"
+#include "KeyMng.h"
+#include "common.h"
 
 extern uint32_t _stext;
 extern uint32_t _etext;
 uint32_t length=0;
 //uint32_t randomX = 0;
+
+extern pFunction JumpToApplication;
+extern uint32_t JumpAddress;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -34,7 +40,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_CRC_Init(void);
 static void MX_RNG_Init(void);
-
+unsigned char Key1[16];
 
 int main(void)
 {
@@ -52,13 +58,31 @@ int main(void)
 
 	FLASH_If_Init();
 	Menu_Intro();
-	//Security_Access();
-	Main_Menu();
 
-	/* USER CODE END 2 */
+	Serial_PutString((uint8_t *)"\n\rBooting Program ......\r\n\n");
+	for(int i = 0; i< 1000000; i++){}
+	if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1) == 1)
+	{
+		//Security_Access();
+		Main_Menu();
+	} else {
+		KeyMng_ReadKey(3,(uint32_t*)Key1);
+		if(Verify_MAC(Key1, (unsigned char *)0x08008020, 6240, (unsigned char *)0x08008000)){
+			Serial_PutString((uint8_t *)"Program Verify SUCCESS !\r\n\n");
+			Serial_PutString((uint8_t *)"Start program execution......\r\n\n");
+			//Execute application
+			SCB->VTOR = APPLICATION_ADDRESS+0x20;
+			JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4 + 0x20);
+			JumpToApplication = (pFunction) JumpAddress;
+			// Initialize user application's Stack Pointer
+			__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS +0x20);
+			JumpToApplication();
+		}
+		else Serial_PutString((uint8_t *)"Program Verify FAIL !\r\n\n");
+		//Security_Access();
+		Main_Menu();
+	}
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
 	/* USER CODE END WHILE */
@@ -242,7 +266,7 @@ static void MX_GPIO_Init(void)
     /*Configure GPIO pins : PA1 PA2 PA3 PA5 */
     GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_5;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }

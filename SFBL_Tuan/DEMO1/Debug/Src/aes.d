@@ -1,3 +1,3 @@
-Src/aes.o: ../Src/aes.c ../Src/aes.h
+Src/aes.o: ../Src/aes.c C:/Git/SFBL_Tuan/DEMO1/Inc/aes.h
 
-../Src/aes.h:
+C:/Git/SFBL_Tuan/DEMO1/Inc/aes.h:

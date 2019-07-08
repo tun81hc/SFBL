@@ -32,11 +32,6 @@ extern "C" {
 
 #include "flash_if.h"
 #include "ymodem.h"
-#include "menu.h"
-
-extern pFunction JumpToApplication;
-extern uint32_t JumpAddress;
-
 
 extern uint8_t aFileName[FILE_NAME_LENGTH];
 

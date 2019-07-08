@@ -1,9 +1,8 @@
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "menu.h"
 #include "common.h"
 #include "flash_if.h"
-#include "menu.h"
 #include "ymodem.h"
 #include "KeyMng.h"
 #include "cmac.h"
@@ -35,7 +34,7 @@ unsigned char T1[32];
 //reprogramming variable
 uint8_t Ymodem_Data[9000];
 uint8_t Key2[] = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
-uint8_t RefMAC[16]={0x26,0xf0,0xdf,0x64,0xad,0x58,0x97,0x98,0x92,0x92,0x66,0x09,0xc5,0xca,0x61,0x07};
+uint8_t RefMAC[16]={0xaf,0x7a,0xe2,0x89,0x9f,0xb7,0x20,0xff,0xd5,0xc3,0x0c,0xba,0x08,0x71,0x8d,0x8b};
 
 /**
   * @brief  Download a file via serial port
@@ -44,9 +43,14 @@ uint8_t RefMAC[16]={0x26,0xf0,0xdf,0x64,0xad,0x58,0x97,0x98,0x92,0x92,0x66,0x09,
   */
 void SerialDownload(void)
 {
-  uint8_t number[11] = {0};
   uint32_t sizeA = 0;
+  uint32_t sizeB = 0;
+  uint8_t number[11] = {0};
   COM_StatusTypeDef result;
+
+  sizeA = 0;
+  sizeB = 0;
+  memset(Ymodem_Data, 0,sizeof(Ymodem_Data));
 
   Serial_PutString((uint8_t *)"Waiting for the file to be sent ... (press 'a' to abort)\n\r");
   result = Ymodem_Receive( &sizeA, Ymodem_Data);
@@ -79,22 +83,19 @@ void SerialDownload(void)
     Serial_PutString((uint8_t *)"\n\rFailed to receive the file!\n\r");
   }
 
+  sizeB = sizeA - 32;
   //Reprogramming
-  if(Verify_MAC(Key2, &Ymodem_Data[32], sizeA, RefMAC)){
+  if(Verify_MAC(Key2, &Ymodem_Data[32], sizeB, RefMAC)){
 		Serial_PutString((uint8_t *)"\r\nReprogramming SUCCESS !");
 		Serial_PutString((uint8_t *)"\r\nYour file Authentication and Integration!");
 		Serial_PutString((uint8_t *)"\r\nFLASHING to FLASH ............");
-		FLASH_If_Write(0x08008000, (uint32_t *)Ymodem_Data, sizeA);
+		FLASH_If_Write(0x08008000, (uint32_t *)Ymodem_Data, sizeB);
 		Serial_PutString((uint8_t *)"\r\nDONE!!!\r\n\n");
-	    sizeA = 0;
-	    memset(Ymodem_Data, 0,sizeof(Ymodem_Data));
   }
   else {
 	  Serial_PutString((uint8_t *)"\r\nReprogramming FAIL !");
 	  Serial_PutString((uint8_t *)"\r\nYour file does not Authentication and Integration!");
 	  Serial_PutString((uint8_t *)"\r\nReenter New File !!!\r\n\n");
-	  sizeA = 0;
-	  memset(Ymodem_Data, 0,sizeof(Ymodem_Data));
 	  Main_Menu();
   }
 }
@@ -127,45 +128,45 @@ void SerialUpload(void)
   }
 }
 
+uint32_t randomX = 0;
+unsigned char arrRandom[10];
+unsigned char MAC1[16];
+unsigned char MAC11[32];
+unsigned char MAC2[32];
+uint8_t flag1 = 1;
+uint8_t count1 = 0;
 void Security_Access(void)
 {
-	uint8_t text[100];
-	int i = 0;
-	uint8_t buff = 0;
-	uint8_t password[8]= "abcd1234";
+	Serial_PutString((uint8_t *)"\r\n-------------Security Access---------------\r\n");
 
-	uint8_t flag_check_password = 0;
-	do {
-	//enter password
-	Serial_PutString((uint8_t *)"\r\nEnter your password: ");
-		while(1)
+	memset(MAC1, 0, 16);
+	memset(MAC11, 0, 32);
+	Serial_PutString((uint8_t *)"\r\nSecurity Code: ");
+	randomX = HAL_RNG_GetRandomNumber(&hrng);
+	InttoString(randomX,arrRandom);
+	Serial_PutString((uint8_t *)arrRandom);
+	AES_CMAC(Key2, arrRandom, 10, MAC1);
+	Hex2string(MAC1,MAC11);
+
+	while(flag1 == 1)
+	{
+
+	Serial_PutString((uint8_t *)"\r\nEnter CMAC: ");
+	HAL_UART_Receive(&huart2, MAC2, 32, 10000);
+	Serial_PutString((uint8_t *)"\r\n ...\n\r");
+	for(int j=0; j< 32;j++)
 		{
-			HAL_UART_Receive(&huart2, &buff, 1, RX_TIMEOUT);
-			if(buff == 13)
+			if(MAC2[j] == MAC11[j])
 			{
-				break;
-			} else {
-			Serial_PutString((uint8_t *)"*");
-			text[i] = buff;
-			i++;
+				count1 += 1;
+				if(count1 == 31)
+					flag1 = 0;
 			}
+			else flag1 = 1;
 		}
-
-		//check password
-		if(0 == memcmp(text, password, 8))
-		{
-			Serial_PutString((uint8_t *)"\nCorrect Password !\r\n\n");
-			flag_check_password = 1;	//password true
-		}
-		else
-		{
-			Serial_PutString((uint8_t *)"\nWrong Password !\r\n\n");
-			flag_check_password = 0;	//password wrong
-			//Set string received password NULL for the next string received
-			i = 0;
-			memset(text, 0, 100);
-		}
-	}while(flag_check_password == 0);
+	memset(MAC2, 0, 32);
+	}
+	Serial_PutString((uint8_t *)"\r\n SUCCESS\n\r");
 }
 
 
@@ -222,7 +223,7 @@ void Main_Menu(void)
 		Serial_PutString((uint8_t *)"Verify Application......\r\n\n");
 		//Select_Key((uint8_t)1, Key);
 		KeyMng_ReadKey(3,(uint32_t*)Key);
-		if(Verify_MAC(Key, (unsigned char *)0x08008020, 128, (unsigned char *)0x08008000)){
+		if(Verify_MAC(Key, (unsigned char *)0x08008020, 6240, (unsigned char *)0x08008000)){
 			Serial_PutString((uint8_t *)"Program Verify SUCCESS !\r\n\n");
 			Serial_PutString((uint8_t *)"Start program execution......\r\n\n");
 
@@ -253,7 +254,7 @@ void Main_Menu(void)
 	/*hidden feature: Calculate MAC !!!!!! */
 	case 'm':
 		KeyMng_ReadKey(3,(uint32_t*)Key);
-		AES_CMAC(Key , (unsigned char*)0x08008020, 128, T);
+		AES_CMAC(Key , (unsigned char*)0x08008020, 6240, T);
 		Hex2string(T, T1);
 		//FLASH_If_Write((uint32_t)0x08008000,(uint32_t *)T, 16);
 		//Serial_PutString((uint8_t *)T);

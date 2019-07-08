@@ -1,4 +1,5 @@
-Src/menu.o: ../Src/menu.c C:/Git/SFBL_Tuan/DEMO1/Inc/main.h \
+Src/menu.o: ../Src/menu.c C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h \
+ C:/Git/SFBL_Tuan/DEMO1/Inc/main.h \
  C:/Git/SFBL_Tuan/DEMO1/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h \
  C:/Git/SFBL_Tuan/DEMO1/Inc/stm32l4xx_hal_conf.h \
  C:/Git/SFBL_Tuan/DEMO1/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc.h \
@@ -33,11 +34,12 @@ Src/menu.o: ../Src/menu.c C:/Git/SFBL_Tuan/DEMO1/Inc/main.h \
  C:/Git/SFBL_Tuan/DEMO1/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h \
  C:/Git/SFBL_Tuan/DEMO1/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h \
  C:/Git/SFBL_Tuan/DEMO1/Inc/flash_if.h \
- C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h \
- C:/Git/SFBL_Tuan/DEMO1/Inc/common.h \
- C:/Git/SFBL_Tuan/DEMO1/Inc/flash_if.h C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h \
- C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h ../Src/KeyMng.h ../Src/cmac.h \
- ../Src/aes.h
+ C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h C:/Git/SFBL_Tuan/DEMO1/Inc/common.h \
+ C:/Git/SFBL_Tuan/DEMO1/Inc/flash_if.h \
+ C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h C:/Git/SFBL_Tuan/DEMO1/Inc/KeyMng.h \
+ C:/Git/SFBL_Tuan/DEMO1/Inc/cmac.h C:/Git/SFBL_Tuan/DEMO1/Inc/aes.h
+
+C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h:
 
 C:/Git/SFBL_Tuan/DEMO1/Inc/main.h:
 
@@ -111,18 +113,14 @@ C:/Git/SFBL_Tuan/DEMO1/Inc/flash_if.h:
 
 C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h:
 
-C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h:
-
 C:/Git/SFBL_Tuan/DEMO1/Inc/common.h:
 
 C:/Git/SFBL_Tuan/DEMO1/Inc/flash_if.h:
 
-C:/Git/SFBL_Tuan/DEMO1/Inc/menu.h:
-
 C:/Git/SFBL_Tuan/DEMO1/Inc/ymodem.h:
 
-../Src/KeyMng.h:
+C:/Git/SFBL_Tuan/DEMO1/Inc/KeyMng.h:
 
-../Src/cmac.h:
+C:/Git/SFBL_Tuan/DEMO1/Inc/cmac.h:
 
-../Src/aes.h:
+C:/Git/SFBL_Tuan/DEMO1/Inc/aes.h:

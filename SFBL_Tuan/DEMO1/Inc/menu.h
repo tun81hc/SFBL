@@ -40,8 +40,7 @@
 #define __MENU_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "flash_if.h"
-#include "ymodem.h"
+#include "main.h"
 
 /* Imported variables --------------------------------------------------------*/
 extern uint8_t aFileName[FILE_NAME_LENGTH];

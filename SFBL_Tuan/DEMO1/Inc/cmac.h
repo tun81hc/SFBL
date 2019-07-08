@@ -25,6 +25,7 @@ void CMAC_Start(unsigned char* K, unsigned char K1[16], unsigned char K2[16]);
 void CMAC_Update(unsigned char* M, uint8_t *length, unsigned char X[16]);
 void CMAC_Finish(unsigned char* K1, unsigned char* K2, unsigned char* M, uint8_t *length, unsigned char T[16]);
 
-bool Verify_MAC(unsigned char* K, unsigned char* M, uint8_t len, unsigned char* Reference_MAC);
+bool Verify_MAC(unsigned char* K, unsigned char* M, uint32_t len, unsigned char* Reference_MAC);
 void Select_Key(unsigned char Key_ID, unsigned char Key[16]);
+void InttoString(uint32_t input, unsigned char *output);
 #endif /* CMAC_H_ */

@@ -30,12 +30,12 @@ int main(void)
 	GPIO();
 	SerialPutString("Booting.................................................\r\n\n");
 	FLASH_If_Init();
-
-
 	/*while (1){*/
-	for(int i = 0; i< 1000000; i++){}
+	for(int i = 0; i< 10000000; i++){}
 	if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0)==1)
+	//*if(1)
 	{
+		Security_Access();
 		Main_Menu ();
 	}
 	else
@@ -66,7 +66,8 @@ int main(void)
 		else
 		{
 			SerialPutString("Verify Application: FAIL-------------------------------- \r\n\n");
-			SerialPutString("Please re-programing------------------------------------ \r\n\n");
+			SerialPutString("Please re-programming------------------------------------ \r\n\n");
+			Security_Access();
 			Main_Menu();
 		}
 	}

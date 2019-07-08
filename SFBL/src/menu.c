@@ -136,7 +136,48 @@ void SerialUpload(void)
   * @param  None
   * @retval None
   */
+uint32_t randomX = 0;
+unsigned char arrRandom[10];
+unsigned char MAC1[16];
+unsigned char MAC11[32];
+unsigned char MAC2[32];
+uint8_t flag1 = 1;
+uint8_t count1 = 0;
+void Security_Access(void)
+{
+	SerialPutString("\r\n              Security Access                 ");
+	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG,ENABLE);
+	RNG_Cmd(ENABLE);
+	memset(MAC1, 0, 16);
+	memset(MAC11, 0, 32);
+	SerialPutString((uint8_t *)"\r\nSecurity Code: ");
+	while(RNG_GetFlagStatus(RNG_FLAG_DRDY) == RESET);
+	randomX = RNG_GetRandomNumber();
+	InttoString(randomX,arrRandom);
+	Serial_PutString((uint8_t *)arrRandom);
+	KeyMng_ReadKey(3,(uint32_t*) result);
+	AES_CMAC((uint32_t*) result, arrRandom, 10, MAC1);
+	Hex2string(MAC1,MAC11);
 
+	while(flag1 == 1)
+	{
+	SerialPutString((uint8_t *)"\r\nEnter CMAC: ");
+	GetInputString(MAC2);
+	for(int j=0; j< 32;j++)
+		{
+			if(MAC2[j] == MAC11[j])
+			{
+				count1 += 1;
+				if(count1 == 31)
+					flag1 = 0;
+			}
+			else flag1 = 1;
+		}
+	memset(MAC2, 0, 32);
+	SerialPutString((uint8_t *)"\r\nVerify fail");
+	}
+	SerialPutString((uint8_t *)"\r\n Successfully\n\r");
+}
 void Main_Menu(void)
 {
   uint8_t key = 0;
@@ -264,5 +305,16 @@ void Main_Menu(void)
     }
   }
 }
+void InttoString(uint32_t input, unsigned char *output)
+{
+	int a = 1000000000;
+	for(int i = 0; i< 10; i++)
+	{
+		output[i] = input/a + 48;
+		input = input%a;
+		a /=10;
+	}
+}
+
 
 /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE******/

@@ -142,7 +142,8 @@ void Security_Access(void)
 	memset(MAC1, 0, 16);
 	memset(MAC11, 0, 32);
 	Serial_PutString((uint8_t *)"\r\nSecurity Code: ");
-	randomX = HAL_RNG_GetRandomNumber(&hrng);
+	//randomX = HAL_RNG_GetRandomNumber(&hrng);
+	randomX = 1478523694;
 	InttoString(randomX,arrRandom);
 	Serial_PutString((uint8_t *)arrRandom);
 	AES_CMAC(Key2, arrRandom, 10, MAC1);

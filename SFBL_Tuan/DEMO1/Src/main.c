@@ -63,7 +63,7 @@ int main(void)
 	for(int i = 0; i< 1000000; i++){}
 	if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1) == 1)
 	{
-		//Security_Access();
+		Security_Access();
 		Main_Menu();
 	} else {
 		KeyMng_ReadKey(3,(uint32_t*)Key1);
@@ -79,7 +79,7 @@ int main(void)
 			JumpToApplication();
 		}
 		else Serial_PutString((uint8_t *)"Program Verify FAIL !\r\n\n");
-		//Security_Access();
+		Security_Access();
 		Main_Menu();
 	}
 

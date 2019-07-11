@@ -1,0 +1,36 @@
+-il 0
+-i "Inc"
+-i "Drivers\STM32L4xx_HAL_Driver\Inc"
+-i "Drivers\STM32L4xx_HAL_Driver\Inc\Legacy"
+-i "Drivers\CMSIS\Device\ST\STM32L4xx\Include"
+-i "C:\Ac6\SystemWorkbench\plugins\fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825\tools\compiler\arm-none-eabi\include"
+-i "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\bits"
+-i "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\machine"
+-i "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\newlib-nano"
+-i "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\rpc"
+-i "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\ssp"
+-i "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\sys"
+-q "Inc"
+-q "Drivers\STM32L4xx_HAL_Driver\Inc"
+-q "Drivers\STM32L4xx_HAL_Driver\Inc\Legacy"
+-q "Drivers\CMSIS\Device\ST\STM32L4xx\Include"
+-q "C:\Ac6\SystemWorkbench\plugins\fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825\tools\compiler\arm-none-eabi\include"
+-q "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\bits"
+-q "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\machine"
+-q "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\newlib-nano"
+-q "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\rpc"
+-q "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\ssp"
+-q "C:\Git\SFBL_Tuan\SECURE_BOOTLOADER\QAC_Setting\include\sys"
+-d "STM32L476xx"
+-sty exdented
+-tab 8
+-en ASC
+-maxerr 0
+-spragma "asm","endasm"
+-spragma "ASM","ENDASM"
+-met+
+-ppm-
+-co a
+-ss+
+-sr-
+-mll 0

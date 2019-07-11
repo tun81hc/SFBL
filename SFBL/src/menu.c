@@ -146,12 +146,12 @@ uint8_t flag1 = 1;
 uint8_t count1 = 0;
 void Security_Access(void)
 {
-	SerialPutString("\r\n                      Security Access                                     ");
+	SerialPutString("\r\n                      Secure Access                                     ");
 	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG,ENABLE);
 	RNG_Cmd(ENABLE);
 	memset(MAC1, 0, 16);
 	memset(MAC11, 0, 32);
-	SerialPutString((uint8_t *)"\r\n     Security Code:    ");
+	SerialPutString((uint8_t *)"\r\nSecure Code:    ");
 	while(RNG_GetFlagStatus(RNG_FLAG_DRDY) == RESET);
 	randomX = RNG_GetRandomNumber();
 	InttoString(randomX,arrRandom);
@@ -162,7 +162,7 @@ void Security_Access(void)
 
 	while(flag1 == 1)
 	{
-	SerialPutString((uint8_t *)"\r\nEnter CMAC:                                                    ");
+	SerialPutString((uint8_t *)"\r\nEnter CMAC:");
 	GetInputString(MAC2);
 	for(int j=0; j< 32;j++)
 		{
@@ -175,7 +175,7 @@ void Security_Access(void)
 			else flag1 = 1;
 		}
 	memset(MAC2, 0, 32);
-	SerialPutString("You need to have permission to access-------------------------------- \r\n\n");
+	SerialPutString("Note: You need to have permission to access---------------------- \r\n\n");
 	}
 	SerialPutString((uint8_t *)"\r\n Successfully\n\r");
 }
@@ -210,6 +210,7 @@ void Main_Menu(void)
     SerialPutString("  Upload Image From the STM32F4xx Internal Flash ------- 2\r\n\n");
     SerialPutString("  Load key to flash------------------------------------- 3\r\n\n");
     SerialPutString("  Execute The New Program------------------------------- 4\r\n\n");
+
 
     if(FlashProtection != 0)
     {
@@ -253,7 +254,7 @@ void Main_Menu(void)
 			USART_DeInit(USART1);
 			GPIO_DeInit(GPIOA);
 			SCB->VTOR = APPLICATION_ADDRESS+0x10;
-					__disable_irq();
+			__disable_irq();
 			JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4+0x10);
 		   //Jump to user application
 		  Jump_To_Application = (pFunction) ((uint32_t)JumpAddress);
@@ -272,6 +273,7 @@ void Main_Menu(void)
     	KeyMng_WriteKey();
     	SerialPutString("Load key successfully -------------------------------------- \r\n\n");
     }
+
     else if ((key == 0x34) && (FlashProtection == 1))
     {
       /* Disable the write protection */

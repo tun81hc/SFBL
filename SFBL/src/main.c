@@ -22,6 +22,7 @@ extern pFunction Jump_To_Application;
 extern uint32_t JumpAddress;
 static void IAP_Init(void);
 void GPIO(void);
+uint8_t abc[10]={'0','1','2','3','4','5','6','7','8','9'};
 Bootloader_State BL_State = Init;
 //__attribute__((__section__(".key"))) uint8_t SecretKey[16]={0x1c,0x7b,0x45,0x47,0x74,0xb9,0x50,0x6c,0x32,0x9b,0x11,0xc4,0xfa,0xf0,0x79,0x36};
 /*2b*/
@@ -33,7 +34,7 @@ int main(void)
 	SerialPutString("Booting.................................................\r\n\n");
 	FLASH_If_Init();
 	/*while (1){*/
-	for(int i = 0; i< 10000000; i++){}
+	for(int i = 0; i< 20000000; i++){}
 	if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0)==1)
 	//*if(1)
 	{
